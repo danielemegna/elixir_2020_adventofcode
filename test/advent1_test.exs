@@ -15,6 +15,7 @@ defmodule Advent1Test do
     assert Advent1.resolve_second_part_with(input) == 241861950
   end
 
+  @tag :skip # too slow, to be improved
   test "resolve level (second part)" do
     assert Advent1.resolve_second_part == 82660352
   end
