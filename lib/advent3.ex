@@ -33,6 +33,15 @@ defmodule Advent3 do
     |> count_trees_for({3, 1})
   end
 
+  def resolve_second_part do
+    map = read_trees_map_from_file()
+    |> TreesMap.from()
+
+    [{1, 1}, {3, 1}, {5, 1}, {7, 1}, {1, 2}]
+    |> Enum.map(&(count_trees_for(map, &1)))
+    |> Enum.reduce(fn x, acc -> x * acc end)
+  end
+
   def count_trees_for(map_string, slope) when is_binary(map_string) do
     TreesMap.from(map_string)
     |> count_trees_for(slope)

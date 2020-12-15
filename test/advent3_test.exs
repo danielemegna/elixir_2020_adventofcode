@@ -19,6 +19,10 @@ defmodule Advent3Test do
     assert 268 == Advent3.resolve_first_part()
   end
 
+  test "resolve second part" do
+    assert 3093068400 == Advent3.resolve_second_part()
+  end
+
   test "get map value for visibile coordinates" do
     trees_map = TreesMap.from(@trees_map_string)
 
@@ -54,6 +58,9 @@ defmodule Advent3Test do
   test "count trees for slope" do
     assert 7 == Advent3.count_trees_for(@trees_map_string, {3, 1})
     assert 2 == Advent3.count_trees_for(@trees_map_string, {1, 1})
+    assert 3 == Advent3.count_trees_for(@trees_map_string, {5, 1})
+    assert 4 == Advent3.count_trees_for(@trees_map_string, {7, 1})
+    assert 2 == Advent3.count_trees_for(@trees_map_string, {1, 2})
   end
 
 end
