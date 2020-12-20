@@ -27,7 +27,7 @@ defmodule Advent4 do
   def count_valid_passports(file_lines) do
     file_lines
     |> passport_list_from()
-    |> Enum.count(&is_valid?/1)
+    |> Enum.count(&valid?/1)
   end
 
   def passport_list_from(file_lines, acc \\ [])
@@ -39,7 +39,7 @@ defmodule Advent4 do
     passport_list_from(file_rest, acc)
   end
 
-  defp is_valid?(passport) do
+  def valid?(passport) do
     passport_keys = passport |> Map.keys() |> MapSet.new()
     ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"]
     |> MapSet.new()

@@ -61,6 +61,18 @@ defmodule Advent4Test do
     assert Enum.any?(passports, &(match?(%{"hcl" => "#cfa07d", "pid" => "166559648", "hgt" => "59in"}, &1)))
   end
 
+  test "all passport fields but 'cid' are mandatory to be valid" do
+    all_fields_passport = %{
+      "ecl" => "any", "pid" => "any", "eyr" => "any", "hcl" => "any",
+      "byr" => "any", "iyr" => "any", "cid" => "any", "hgt" => "any"
+    }
+    assert false == Advent4.valid?(%{})
+    assert true == Advent4.valid?(all_fields_passport)
+    assert true == Advent4.valid?(all_fields_passport |> Map.delete("cid"))
+    assert false == Advent4.valid?(all_fields_passport |> Map.delete("ecl"))
+    assert false == Advent4.valid?(all_fields_passport |> Map.delete("hgt"))
+  end
+
   test "count valid passwords in passport file stream" do
     assert 2 == Advent4.count_valid_passports(passports_file_stream())
   end
