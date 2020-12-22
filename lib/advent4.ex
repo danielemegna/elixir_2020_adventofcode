@@ -59,7 +59,11 @@ defmodule Advent4 do
   defp valid_field?({"byr", value}), do: value >= 1920 && value <= 2002
   defp valid_field?({"iyr", value}), do: value >= 2010 && value <= 2020
   defp valid_field?({"eyr", value}), do: value >= 2020 && value <= 2030
+  defp valid_field?({"hcl", value}), do: String.match?(value, ~r/^#[0-9a-f]{6}$/)
+  defp valid_field?({"ecl", value}), do: value in ["amb","blu","brn","gry","grn","hzl","oth"]
+  defp valid_field?({"pid", value}), do: String.match?(value, ~r/^[0-9]{9}$/)
 
+  # TODO refactor with a regex ?
   defp valid_field?({"hgt", value}) do
     {height, unit} = String.split_at(value, -2)
     height =

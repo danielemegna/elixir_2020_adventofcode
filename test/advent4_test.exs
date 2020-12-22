@@ -141,9 +141,38 @@ defmodule Advent4Test do
       assert validate_with(%{"hgt" => "opsin"}) == false
     end
 
-    # hcl (Hair Color) - a # followed by exactly six characters 0-9 or a-f.
-    # ecl (Eye Color) - exactly one of: amb blu brn gry grn hzl oth.
-    # pid (Passport ID) - a nine-digit number, including leading zeroes.
+    test "hcl (Hair Color) - a # followed by exactly six characters 0-9 or a-f" do
+      assert validate_with(%{"hcl" => ""}) == false
+      assert validate_with(%{"hcl" => "ops"}) == false
+      assert validate_with(%{"hcl" => "#12345"}) == false
+      assert validate_with(%{"hcl" => "#0123456"}) == false
+      assert validate_with(%{"hcl" => "#gbcdef"}) == false
+
+      assert validate_with(%{"hcl" => "#123456"}) == true
+      assert validate_with(%{"hcl" => "#012345"}) == true
+      assert validate_with(%{"hcl" => "#abcdef"}) == true
+    end
+
+    test "ecl (Eye Color) - exactly one of: amb blu brn gry grn hzl oth" do
+      assert validate_with(%{"ecl" => ""}) == false
+      assert validate_with(%{"ecl" => "ops"}) == false
+      assert validate_with(%{"ecl" => "123"}) == false
+
+      assert validate_with(%{"ecl" => "amb"}) == true
+      assert validate_with(%{"ecl" => "gry"}) == true
+      assert validate_with(%{"ecl" => "oth"}) == true
+    end
+
+    test "pid (Passport ID) - a nine-digit number, including leading zeroes" do
+      assert validate_with(%{"pid" => ""}) == false
+      assert validate_with(%{"pid" => "ops"}) == false
+      assert validate_with(%{"pid" => "01234567z"}) == false
+
+      assert validate_with(%{"pid" => "012345678"}) == true
+      assert validate_with(%{"pid" => "123456789"}) == true
+      assert validate_with(%{"pid" => "999999999"}) == true
+      assert validate_with(%{"pid" => "000000000"}) == true
+    end
 
     defp validate_with(overrides) do
       @strictly_valid_passport
