@@ -11,9 +11,13 @@ defmodule Passport do
     |> String.split(" ")
     |> Enum.reduce(%{}, fn kv, acc ->
       [k, v] = kv |> String.split(":")
+      v = typed(k, v)
       Map.put(acc, k, v)
     end)
   end
+
+  defp typed(key, value) when key in ["byr", "iyr", "eyr"], do: String.to_integer(value)
+  defp typed(_key, value), do: value
 
 end
 

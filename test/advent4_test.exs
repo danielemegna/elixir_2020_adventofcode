@@ -33,7 +33,7 @@ defmodule Advent4Test do
 
       assert Map.keys(map) |> Enum.count == 6
       assert map["hcl"] == "#cfa07d"
-      assert map["eyr"] == "2025"
+      assert map["eyr"] == 2025
       assert map["hgt"] == "59in"
     end
 
@@ -48,7 +48,7 @@ defmodule Advent4Test do
 
       assert Map.keys(map) |> Enum.count == 7
       assert map["hcl"] == "#ae17e1"
-      assert map["eyr"] == "2024"
+      assert map["eyr"] == 2024
       assert map["pid"] == "760753108"
       assert map["hgt"] == "179cm"
     end
@@ -58,7 +58,7 @@ defmodule Advent4Test do
 
       assert Enum.count(passports) == 4
       assert Enum.any?(passports, &(match?(%{"ecl" => "gry", "pid" => "860033327", "hgt" => "183cm"}, &1)))
-      assert Enum.any?(passports, &(match?(%{"iyr" => "2013", "pid" => "028048884", "byr" => "1929"}, &1)))
+      assert Enum.any?(passports, &(match?(%{"iyr" => 2013, "pid" => "028048884", "byr" => 1929}, &1)))
       assert Enum.any?(passports, &(match?(%{"hcl" => "#ae17e1", "pid" => "760753108", "hgt" => "179cm"}, &1)))
       assert Enum.any?(passports, &(match?(%{"hcl" => "#cfa07d", "pid" => "166559648", "hgt" => "59in"}, &1)))
     end
