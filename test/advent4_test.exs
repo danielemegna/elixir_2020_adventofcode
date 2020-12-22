@@ -122,7 +122,7 @@ defmodule Advent4Test do
 
     test "hgt (Height)" do
       # a number followed by either cm or in:
-      #assert validate_with(%{"hgt" => ""}) == false
+      assert validate_with(%{"hgt" => ""}) == false
       assert validate_with(%{"hgt" => "123"}) == false
       assert validate_with(%{"hgt" => "155xx"}) == false
       assert validate_with(%{"hgt" => "65yy"}) == false
