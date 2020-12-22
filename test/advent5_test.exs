@@ -1,6 +1,10 @@
 defmodule Advent5Test do
   use ExUnit.Case
 
+  test "resolve first part" do
+    assert Advent5.resolve_first_part() == 848
+  end
+
   test "decode seats" do
     assert Advent5.decode_seat("FBFBBFFRLR") == %Seat{row: 44, column: 5}
     assert Advent5.decode_seat("BFFFBBFRRR") == %Seat{row: 70, column: 7}

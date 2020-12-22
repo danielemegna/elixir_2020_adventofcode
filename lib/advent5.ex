@@ -7,6 +7,13 @@ end
 
 defmodule Advent5 do
 
+  def resolve_first_part() do
+    read_seats_file()
+    |> Stream.map(&decode_seat/1)
+    |> Stream.map(&Seat.seat_id/1)
+    |> Enum.max
+  end
+
   def decode_seat(encoded) do
     {row_steps, column_steps} = encoded
     |> String.graphemes()
@@ -28,6 +35,11 @@ defmodule Advent5 do
     end
 
     reduce_steps(new_range, rest_steps)
+  end
+
+  defp read_seats_file do
+    File.stream!("advent5.txt")
+    |> Stream.map(&String.trim/1)
   end
 
 end
