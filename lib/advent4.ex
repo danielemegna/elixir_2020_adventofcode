@@ -50,6 +50,32 @@ defmodule Advent4 do
     |> MapSet.subset?(passport_keys)
   end
 
+  def strictly_valid?(passport) do
+    valid?(passport) && Enum.all?(passport, fn field ->
+      valid_field?(field)
+    end)
+  end
+
+  defp valid_field?({"byr", value}), do: value >= 1920 && value <= 2002
+  defp valid_field?({"iyr", value}), do: value >= 2010 && value <= 2020
+  defp valid_field?({"eyr", value}), do: value >= 2020 && value <= 2030
+
+  defp valid_field?({"hgt", value}) do
+    {height, unit} = String.split_at(value, -2)
+    height =
+      try do
+        String.to_integer(height)
+        rescue _ -> -1
+      end
+
+    case unit do
+      "cm" -> height >= 150 && height <= 193
+      "in" -> height >= 59 && height <= 76
+      _ -> false
+    end
+  end
+
+  defp valid_field?(_), do: true
 
   defp read_passports_file do
     File.stream!("advent4.txt")

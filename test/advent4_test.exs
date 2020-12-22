@@ -85,4 +85,72 @@ defmodule Advent4Test do
 
   end
 
+  describe "strictly passport validation:" do
+
+    @strictly_valid_passport %{
+      "byr" => 1944, # four digits; at least 1920 and at most 2002.
+      "iyr" => 2010, # four digits; at least 2010 and at most 2020.
+      "eyr" => 2021, # four digits; at least 2020 and at most 2030.
+      "hgt" => "158cm", # a number followed by either cm or in: If cm, the number must be at least 150 and at most 193.
+      "hcl" => "#b6652a", # a # followed by exactly six characters 0-9 or a-f.
+      "ecl" => "blu", # exactly one of: amb blu brn gry grn hzl oth.
+      "pid" => "093154719" # a nine-digit number, including leading zeroes.
+    }
+
+    test "strictly valid passport" do
+      assert Advent4.strictly_valid?(@strictly_valid_passport) == true
+    end
+
+    test "byr (Birth Year) - four digits; at least 1920 and at most 2002" do
+      assert validate_with(%{"byr" => 1919}) == false
+      assert validate_with(%{"byr" => 2003}) == false
+      assert validate_with(%{"byr" => 1990}) == true
+      assert validate_with(%{"byr" => 2002}) == true
+    end
+
+    test "iyr (Issue Year) - four digits; at least 2010 and at most 2020" do
+      assert validate_with(%{"iyr" => 2009}) == false
+      assert validate_with(%{"iyr" => 2021}) == false
+      assert validate_with(%{"iyr" => 2010}) == true
+    end
+
+    test "eyr (Expiration Year) - four digits; at least 2020 and at most 2030" do
+      assert validate_with(%{"eyr" => 2019}) == false
+      assert validate_with(%{"eyr" => 2031}) == false
+      assert validate_with(%{"eyr" => 2020}) == true
+    end
+
+    test "hgt (Height)" do
+      # a number followed by either cm or in:
+      #assert validate_with(%{"hgt" => ""}) == false
+      assert validate_with(%{"hgt" => "123"}) == false
+      assert validate_with(%{"hgt" => "155xx"}) == false
+      assert validate_with(%{"hgt" => "65yy"}) == false
+      assert validate_with(%{"hgt" => "ops"}) == false
+
+      # If cm, the number must be at least 150 and at most 193.
+      assert validate_with(%{"hgt" => "175cm"}) == true
+      assert validate_with(%{"hgt" => "123cm"}) == false
+      assert validate_with(%{"hgt" => "200cm"}) == false
+      assert validate_with(%{"hgt" => "opscm"}) == false
+
+      # If in, the number must be at least 59 and at most 76.
+      assert validate_with(%{"hgt" => "60in"}) == true
+      assert validate_with(%{"hgt" => "50in"}) == false
+      assert validate_with(%{"hgt" => "80in"}) == false
+      assert validate_with(%{"hgt" => "opsin"}) == false
+    end
+
+    # hcl (Hair Color) - a # followed by exactly six characters 0-9 or a-f.
+    # ecl (Eye Color) - exactly one of: amb blu brn gry grn hzl oth.
+    # pid (Passport ID) - a nine-digit number, including leading zeroes.
+
+    defp validate_with(overrides) do
+      @strictly_valid_passport
+      |> Map.merge(overrides)
+      |> Advent4.strictly_valid?()
+    end
+
+  end
+
 end
