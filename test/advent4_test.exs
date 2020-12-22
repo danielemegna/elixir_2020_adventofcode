@@ -52,6 +52,10 @@ defmodule Advent4Test do
     assert 256 == Advent4.resolve_first_part()
   end
 
+  test "resolve second part" do
+    assert 198 == Advent4.resolve_second_part()
+  end
+
   describe "passport parsing:" do
 
     test "parse passport from string data" do

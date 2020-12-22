@@ -28,6 +28,11 @@ defmodule Advent4 do
     |> count_valid_passports()
   end
 
+  def resolve_second_part do
+    read_passports_file()
+    |> count_strictly_valid_passports()
+  end
+
   def count_valid_passports(file_lines) do
     file_lines
     |> passport_list_from()
