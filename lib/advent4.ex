@@ -34,6 +34,12 @@ defmodule Advent4 do
     |> Enum.count(&valid?/1)
   end
 
+  def count_strictly_valid_passports(file_lines) do
+    file_lines
+    |> passport_list_from()
+    |> Enum.count(&strictly_valid?/1)
+  end
+
   def passport_list_from(file_lines, acc \\ [])
   def passport_list_from([], acc), do: acc
   def passport_list_from(["" | rest], acc), do: passport_list_from(rest, acc)

@@ -17,10 +17,36 @@ defmodule Advent4Test do
   iyr:2011 ecl:brn hgt:59in
   """
 
-  defp passports_file_stream() do
-    @passports_file_content
-      |> String.split("\n")
-  end
+  @more_passports_file_content """
+  eyr:1972 cid:100
+  hcl:#18171d ecl:amb hgt:170 pid:186cm iyr:2018 byr:1926
+
+  iyr:2019
+  hcl:#602927 eyr:1967 hgt:170cm
+  ecl:grn pid:012533040 byr:1946
+
+  hcl:dab227 iyr:2012
+  ecl:brn hgt:182cm pid:021572410 eyr:2020 byr:1992 cid:277
+
+  hgt:59cm ecl:zzz
+  eyr:2038 hcl:74454a iyr:2023
+  pid:3556412378 byr:2007
+
+  pid:087499704 hgt:74in ecl:grn iyr:2012 eyr:2030 byr:1980
+  hcl:#623a2f
+
+  eyr:2029 ecl:blu cid:129 byr:1989
+  iyr:2014 pid:896056539 hcl:#a97842 hgt:165cm
+
+  hcl:#888785
+  hgt:164cm byr:2001 iyr:2015 cid:88
+  pid:545766238 ecl:hzl
+  eyr:2022
+
+  iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719
+  """
+
+  defp stream_of(content), do: content |> String.split("\n") |> Stream.map(&(&1))
 
   test "resolve first part" do
     assert 256 == Advent4.resolve_first_part()
@@ -54,13 +80,25 @@ defmodule Advent4Test do
     end
 
     test "parse passport list from file stream" do
-      passports = Advent4.passport_list_from(passports_file_stream())
+      passports = Advent4.passport_list_from(stream_of(@passports_file_content))
 
       assert Enum.count(passports) == 4
       assert Enum.any?(passports, &(match?(%{"ecl" => "gry", "pid" => "860033327", "hgt" => "183cm"}, &1)))
       assert Enum.any?(passports, &(match?(%{"iyr" => 2013, "pid" => "028048884", "byr" => 1929}, &1)))
       assert Enum.any?(passports, &(match?(%{"hcl" => "#ae17e1", "pid" => "760753108", "hgt" => "179cm"}, &1)))
       assert Enum.any?(passports, &(match?(%{"hcl" => "#cfa07d", "pid" => "166559648", "hgt" => "59in"}, &1)))
+    end
+
+    test "parse more passports from file stream" do
+      passports = Advent4.passport_list_from(stream_of(@more_passports_file_content))
+
+      assert Enum.count(passports) == 8
+
+      assert Enum.any?(passports, &(match?(%{"pid" => "186cm", "byr" => 1926, "cid" => "100"}, &1)))
+      assert Enum.any?(passports, &(match?(%{"pid" => "021572410","hcl" => "dab227", "iyr" => 2012}, &1)))
+      assert Enum.any?(passports, &(match?(%{"pid" => "545766238", "iyr" => 2015, "byr" => 2001}, &1)))
+      assert Enum.any?(passports, &(match?(%{"pid" => "093154719", "ecl" => "blu", "hgt" => "158cm"}, &1)))
+
     end
 
   end
@@ -79,8 +117,8 @@ defmodule Advent4Test do
       assert false == Advent4.valid?(all_fields_passport |> Map.delete("hgt"))
     end
 
-    test "count valid passwords in passport file stream" do
-      assert 2 == Advent4.count_valid_passports(passports_file_stream())
+    test "count valid passports in passport file stream" do
+      assert 2 == Advent4.count_valid_passports(stream_of(@passports_file_content))
     end
 
   end
@@ -172,6 +210,10 @@ defmodule Advent4Test do
       assert validate_with(%{"pid" => "123456789"}) == true
       assert validate_with(%{"pid" => "999999999"}) == true
       assert validate_with(%{"pid" => "000000000"}) == true
+    end
+
+    test "count strictly valid passports in passport file stream" do
+      assert 4 == Advent4.count_strictly_valid_passports(stream_of(@more_passports_file_content))
     end
 
     defp validate_with(overrides) do
