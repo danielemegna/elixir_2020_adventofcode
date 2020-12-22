@@ -10,9 +10,9 @@ defmodule Passport do
     passport_data
     |> String.split(" ")
     |> Enum.reduce(%{}, fn kv, acc ->
-      [k, v] = kv |> String.split(":")
-      v = typed(k, v)
-      Map.put(acc, k, v)
+      [key, value] = kv |> String.split(":")
+      typed_value = typed(key, value)
+      Map.put(acc, key, typed_value)
     end)
   end
 
@@ -33,16 +33,13 @@ defmodule Advent4 do
     |> count_strictly_valid_passports()
   end
 
-  def count_valid_passports(file_lines) do
-    file_lines
-    |> passport_list_from()
-    |> Enum.count(&valid?/1)
-  end
+  def count_valid_passports(file_lines), do: count_valid_passports(file_lines, &valid?/1)
+  def count_strictly_valid_passports(file_lines), do: count_valid_passports(file_lines, &strictly_valid?/1)
 
-  def count_strictly_valid_passports(file_lines) do
+  defp count_valid_passports(file_lines, validation_fn) do
     file_lines
     |> passport_list_from()
-    |> Enum.count(&strictly_valid?/1)
+    |> Enum.count(validation_fn)
   end
 
   def passport_list_from(file_lines, acc \\ [])
@@ -62,9 +59,7 @@ defmodule Advent4 do
   end
 
   def strictly_valid?(passport) do
-    valid?(passport) && Enum.all?(passport, fn field ->
-      valid_field?(field)
-    end)
+    valid?(passport) && Enum.all?(passport, &valid_field?/1)
   end
 
   defp valid_field?({"byr", value}), do: value >= 1920 && value <= 2002
@@ -73,8 +68,8 @@ defmodule Advent4 do
   defp valid_field?({"hcl", value}), do: String.match?(value, ~r/^#[0-9a-f]{6}$/)
   defp valid_field?({"ecl", value}), do: value in ["amb","blu","brn","gry","grn","hzl","oth"]
   defp valid_field?({"pid", value}), do: String.match?(value, ~r/^[0-9]{9}$/)
+  defp valid_field?({"cid", _}), do: true
 
-  # TODO refactor with a regex ?
   defp valid_field?({"hgt", value}) do
     {height, unit} = String.split_at(value, -2)
     height =
@@ -90,7 +85,7 @@ defmodule Advent4 do
     end
   end
 
-  defp valid_field?(_), do: true
+  defp valid_field?(_), do: false
 
   defp read_passports_file do
     File.stream!("advent4.txt")
