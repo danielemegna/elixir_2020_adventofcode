@@ -19,14 +19,14 @@ defmodule Advent5Test do
   end
 
   test "get seat ID from Seat struct" do
-    assert Seat.seat_id(%Seat{row: 44, column: 5}) == 357
-    assert Seat.seat_id(%Seat{row: 70, column: 7}) == 567
-    assert Seat.seat_id(%Seat{row: 14, column: 7}) == 119
-    assert Seat.seat_id(%Seat{row: 102, column: 4}) == 820
-    assert Seat.seat_id(%Seat{row: 0, column: 0}) == 0
-    assert Seat.seat_id(%Seat{row: 0, column: 1}) == 1
-    assert Seat.seat_id(%Seat{row: 0, column: 7}) == 7
-    assert Seat.seat_id(%Seat{row: 1, column: 0}) == 8
-    assert Seat.seat_id(%Seat{row: 127, column: 7}) == 1023
+    assert Seat.get_id(%Seat{row: 44, column: 5}) == 357
+    assert Seat.get_id(%Seat{row: 70, column: 7}) == 567
+    assert Seat.get_id(%Seat{row: 14, column: 7}) == 119
+    assert Seat.get_id(%Seat{row: 102, column: 4}) == 820
+    assert Seat.get_id(%Seat{row: 0, column: 0}) == 0
+    assert Seat.get_id(%Seat{row: 0, column: 1}) == 1
+    assert Seat.get_id(%Seat{row: 0, column: 7}) == 7
+    assert Seat.get_id(%Seat{row: 1, column: 0}) == 8
+    assert Seat.get_id(%Seat{row: 127, column: 7}) == 1023
   end
 end
