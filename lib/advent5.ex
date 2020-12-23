@@ -14,6 +14,34 @@ defmodule Advent5 do
     |> Enum.max
   end
 
+  def resolve_second_part() do
+    plane_seats = 0..127
+    |> Enum.flat_map(fn row ->
+      0..7 |> Enum.map(fn col ->
+        %Seat{row: row, column: col}
+      end)
+    end)
+
+    busy_seats = read_seats_file()
+    |> Stream.map(&decode_seat/1)
+
+    free_seats = MapSet.difference(MapSet.new(plane_seats), MapSet.new(busy_seats))
+
+    free_seats
+    |> Enum.find(fn s ->
+      {prev, next} = case s.column do
+        0 -> {{s.row-1, 7}, {s.row, 1}}
+        7 -> {{s.row, 6}, {s.row+1, 0}}
+        n -> {{s.row, n-1}, {s.row, n+1}}
+      end
+
+      prev_free? = free_seats |> Enum.any?(&({&1.row, &1.column} == prev))
+      next_free? = free_seats |> Enum.any?(&({&1.row, &1.column} == next))
+      !prev_free? && !next_free?
+    end)
+    |> Seat.seat_id()
+  end
+
   def decode_seat(encoded) do
     {row_steps, column_steps} = encoded
     |> String.graphemes()
