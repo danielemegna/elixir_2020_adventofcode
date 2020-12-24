@@ -25,8 +25,8 @@ defmodule Advent6Test do
     assert Advent6.resolve_first_part() == 6703
   end
 
-  test "sum answers from file content" do
-    assert Advent6.sum_answers(stream_of(@answers_file_content)) == 3 + 3 + 3 + 1 + 1
+  test "sum different answers from file content" do
+    assert Advent6.sum_different_answers(stream_of(@answers_file_content)) == 3 + 3 + 3 + 1 + 1
   end
 
 end
