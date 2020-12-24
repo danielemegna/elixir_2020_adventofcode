@@ -6,14 +6,19 @@ defmodule Advent6 do
   end
 
   def sum_answers(file_lines) do
-    file_lines
-    |> Enum.reduce({0, []}, fn
-      "", {total_count, _} -> {total_count, []}
-      line, {total_count, group_answers} ->
-        new_answers = (String.graphemes(line) -- group_answers)
-        {total_count + Enum.count(new_answers), group_answers ++ new_answers}
+    answers_by_group = file_lines
+    |> Enum.chunk_by(fn l -> l == "" end)
+    |> Enum.reject(&(&1 == [""]))
+
+    answers_by_group
+    |> Enum.map(fn group_answers ->
+      group_answers |> Enum.flat_map(fn person_answers ->
+        String.graphemes(person_answers)
+      end)
+      |> Enum.uniq
     end)
-    |> elem(0)
+    |> Enum.map(&Enum.count/1)
+    |> Enum.sum
   end
   
   defp read_answers_file do
