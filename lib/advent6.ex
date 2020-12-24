@@ -5,10 +5,26 @@ defmodule Advent6 do
     |> sum_different_answers()
   end
 
+  def resolve_second_part do
+    read_answers_file()
+    |> sum_answered_by_entire_group()
+  end
+
   def sum_different_answers(file_lines) do
     answers_by_group(file_lines)
     |> Enum.map(fn group_answers ->
       group_answers |> List.flatten() |> Enum.uniq
+    end)
+    |> Enum.map(&Enum.count/1)
+    |> Enum.sum
+  end
+
+  def sum_answered_by_entire_group(file_lines) do
+    answers_by_group(file_lines)
+    |> Enum.map(fn group_answers ->
+      Enum.reduce(group_answers, fn ans, acc ->
+        MapSet.intersection(MapSet.new(ans), MapSet.new(acc)) |> MapSet.to_list
+      end)
     end)
     |> Enum.map(&Enum.count/1)
     |> Enum.sum
