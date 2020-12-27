@@ -32,21 +32,22 @@ defmodule Advent7 do
   def count_who_can_contains(rules, subject) do
     rules_map = parse_bag_rules(rules)
 
-    who_can_contains?(rules_map, subject)
+    who_can_contains?(subject, rules_map)
     |> Enum.count()
   end
 
-  def who_can_contains?(rules_map, subject) do
-    result = rules_map
-    |> Enum.filter(fn {_, contained} ->
-      contained |> Enum.any?(fn{_,v} -> v == subject end)
+  defp who_can_contains?(subject, rules_map) do
+    found = rules_map
+    |> Enum.filter(fn {_container, contained_list} ->
+      Enum.any?(contained_list, fn{_count, contained} ->
+        contained == subject
+      end)
     end)
     |> Enum.map(&(elem(&1, 0)))
     
-    bigger = result
-    |> Enum.flat_map(&(who_can_contains?(rules_map, &1)))
-
-    result ++ bigger |> Enum.uniq
+    found
+    |> Enum.concat(Enum.flat_map(found, &(who_can_contains?(&1, rules_map))))
+    |> Enum.uniq
   end
 
   defp read_bag_rules_file do
