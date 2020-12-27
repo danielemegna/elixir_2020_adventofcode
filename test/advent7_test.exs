@@ -15,6 +15,10 @@ defmodule Advent7Test do
 
   defp stream_of(content), do: content |> String.split("\n", trim: true) |> Stream.map(&(&1))
 
+  test "resolve first part" do
+    assert Advent7.resolve_first_part() == 235
+  end
+
   test "parse a bag rule" do
     parsed = Advent7.parse_bag_rule(
       "light red bags contain 1 bright white bag, 2 muted yellow bags."
@@ -45,6 +49,13 @@ defmodule Advent7Test do
       "faded blue" => [],
       "dotted black" => []
     }
+  end
+
+  test "count who can contains a bag" do
+    bag_rules = stream_of(@bag_rules_file_content)
+    assert 0 == Advent7.count_who_can_contains(bag_rules, "light red")
+    assert 0 == Advent7.count_who_can_contains(bag_rules, "dark orange")
+    assert 4 == Advent7.count_who_can_contains(bag_rules, "shiny gold")
   end
 
 end
