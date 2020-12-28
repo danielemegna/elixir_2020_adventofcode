@@ -29,15 +29,16 @@ defmodule Advent7 do
     {container, contained}
   end
 
-  def count_who_can_contains(rules, subject) do
-    rules_map = parse_bag_rules(rules)
+  def count_who_can_contains(bag_rules, subject) do
+    IO.inspect bag_rules
+    bag_rules_map = parse_bag_rules(bag_rules)
 
-    who_can_contains?(subject, rules_map)
+    who_can_contains?(subject, bag_rules_map)
     |> Enum.count()
   end
 
-  defp who_can_contains?(subject, rules_map) do
-    found = rules_map
+  defp who_can_contains?(subject, bag_rules_map) do
+    found = bag_rules_map
     |> Enum.filter(fn {_container, contained_list} ->
       Enum.any?(contained_list, fn{_count, contained} ->
         contained == subject
@@ -46,7 +47,7 @@ defmodule Advent7 do
     |> Enum.map(&(elem(&1, 0)))
     
     found
-    |> Enum.concat(Enum.flat_map(found, &(who_can_contains?(&1, rules_map))))
+    |> Enum.concat(Enum.flat_map(found, &(who_can_contains?(&1, bag_rules_map))))
     |> Enum.uniq
   end
 
