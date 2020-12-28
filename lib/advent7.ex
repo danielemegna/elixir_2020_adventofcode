@@ -10,8 +10,8 @@ defmodule Advent7 do
     |> how_many_bags_inside?("shiny gold")
   end
 
-  def parse_bag_rules(lines) do
-    lines
+  def parse_bag_rules(stream) do
+    stream
     |> Enum.map(&parse_bag_rule/1)
     |> Map.new
   end
@@ -34,33 +34,42 @@ defmodule Advent7 do
     {container, contained}
   end
 
-  def count_who_can_contains(bag_rules, subject) do
-    IO.inspect bag_rules
-    bag_rules_map = parse_bag_rules(bag_rules)
-
-    who_can_contains?(subject, bag_rules_map)
+  def count_who_can_contains(bag_rules_stream, subject) do
+    who_can_contains?(subject, bag_rules_stream)
     |> Enum.count()
   end
 
+  defp who_can_contains?(subject, %Stream{} = bag_rules_stream) do
+    bag_rules_map = parse_bag_rules(bag_rules_stream)
+    who_can_contains?(subject, bag_rules_map)
+  end
+
   defp who_can_contains?(subject, bag_rules_map) do
-    found = bag_rules_map
+    results = bag_rules_map
     |> Enum.filter(fn {_container, contained_list} ->
       Enum.any?(contained_list, fn{_count, contained} ->
         contained == subject
       end)
     end)
     |> Enum.map(&(elem(&1, 0)))
+
+    who_can_contains_results = results
+    |> Enum.flat_map(&(who_can_contains?(&1, bag_rules_map)))
     
-    found
-    |> Enum.concat(Enum.flat_map(found, &(who_can_contains?(&1, bag_rules_map))))
+    Enum.concat(results, who_can_contains_results)
     |> Enum.uniq
   end
 
-  def how_many_bags_inside?(bag_rules, subject) do
-    parse_bag_rules(bag_rules)
+  def how_many_bags_inside?(%Stream{} = bag_rules_stream, subject) do
+    parse_bag_rules(bag_rules_stream)
+    |> how_many_bags_inside?(subject)
+  end
+
+  def how_many_bags_inside?(bag_rules_map, subject) do
+    bag_rules_map
     |> Map.get(subject)
     |> Enum.map(fn{count, contained} ->
-      count * (1 + how_many_bags_inside?(bag_rules, contained))
+      count * (1 + how_many_bags_inside?(bag_rules_map, contained))
     end)
     |> Enum.sum
   end
