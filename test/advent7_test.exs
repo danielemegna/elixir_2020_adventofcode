@@ -19,6 +19,10 @@ defmodule Advent7Test do
     assert Advent7.resolve_first_part() == 235
   end
 
+  test "resolve second part" do
+    assert Advent7.resolve_second_part() == 158493
+  end
+
   test "parse a bag rule" do
     parsed = Advent7.parse_bag_rule(
       "light red bags contain 1 bright white bag, 2 muted yellow bags."
@@ -56,6 +60,13 @@ defmodule Advent7Test do
     assert 0 == Advent7.count_who_can_contains(bag_rules, "light red")
     assert 0 == Advent7.count_who_can_contains(bag_rules, "dark orange")
     assert 4 == Advent7.count_who_can_contains(bag_rules, "shiny gold")
+  end
+
+  test "how many bags contains?" do
+    bag_rules = stream_of(@bag_rules_file_content)
+    assert 0 == Advent7.how_many_bags_inside?(bag_rules, "faded blue")
+    assert 0 == Advent7.how_many_bags_inside?(bag_rules, "dotted black")
+    assert 32 == Advent7.how_many_bags_inside?(bag_rules, "shiny gold")
   end
 
 end

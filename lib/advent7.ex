@@ -5,6 +5,11 @@ defmodule Advent7 do
     |> count_who_can_contains("shiny gold")
   end
 
+  def resolve_second_part() do
+    read_bag_rules_file()
+    |> how_many_bags_inside?("shiny gold")
+  end
+
   def parse_bag_rules(lines) do
     lines
     |> Enum.map(&parse_bag_rule/1)
@@ -49,6 +54,15 @@ defmodule Advent7 do
     found
     |> Enum.concat(Enum.flat_map(found, &(who_can_contains?(&1, bag_rules_map))))
     |> Enum.uniq
+  end
+
+  def how_many_bags_inside?(bag_rules, subject) do
+    parse_bag_rules(bag_rules)
+    |> Map.get(subject)
+    |> Enum.map(fn{count, contained} ->
+      count * (1 + how_many_bags_inside?(bag_rules, contained))
+    end)
+    |> Enum.sum
   end
 
   defp read_bag_rules_file do
