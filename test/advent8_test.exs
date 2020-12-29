@@ -58,13 +58,14 @@ defmodule Advent8Test do
     acc +1
     jmp +4
     acc +3
-    jmp +50
+    jmp +4
     nop +0
     acc +1
     jmp -4
+    acc +2
     """
     m = Advent8.run_on_machine(stream_of(simple_program))
-    assert m == %Machine{pointer: 54, acc: 5, history: [4, 3, 7, 6, 2, 1, 0]}
+    assert m == %Machine{pointer: 9, acc: 7, history: [8, 4, 3, 7, 6, 2, 1, 0]} 
   end
 
   test "halt on infinite loop (operation already executed)" do
