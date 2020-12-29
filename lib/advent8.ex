@@ -6,7 +6,9 @@ defmodule Machine do
     m = run(m, i) |> Map.put(:history, [m.pointer | m.history])
 
     cond do
-      should_halt?(m, instructions) -> m
+      should_halt?(m, instructions) -> {:ok, m}
+      wrong_pointer?(m, instructions) -> {:wrong_pointer, m}
+      loop_recongized?(m) -> {:loop, m}
       true -> run(m, instructions)
     end
   end
@@ -21,9 +23,15 @@ defmodule Machine do
     %{m | pointer: m.pointer+1}
 
   defp should_halt?(%Machine{} = m, instructions) do
-    m.pointer in m.history ||
-    m.pointer < 0 ||
-    m.pointer >= Enum.count(instructions)
+    m.pointer == Enum.count(instructions)
+  end
+
+  defp wrong_pointer?(%Machine{} = m, instructions) do
+    m.pointer < 0 || m.pointer >= Enum.count(instructions)
+  end
+
+  defp loop_recongized?(%Machine{} = m) do
+    m.pointer in m.history
   end
 
 end
@@ -31,9 +39,10 @@ end
 defmodule Advent8 do
 
   def resolve_first_part() do
-    read_boot_code_file()
+    {:loop, machine} = read_boot_code_file()
     |> run_on_machine()
-    |> Map.get(:acc)
+
+    machine.acc
   end
 
   def run_on_machine(instructions_stream) do

@@ -32,23 +32,26 @@ defmodule Advent8Test do
     m = %Machine{}
     assert %Machine{pointer: 0, acc: 0} = m
 
-    m = Machine.run(m, [{:acc, 2}])
+    {:ok, m} = Machine.run(m, [{:acc, 2}])
     assert %Machine{pointer: 1, acc: 2} = m
   end
 
   test "handle jmp instruction" do
-    m = Machine.run(%Machine{}, [{:jmp, 4}])
+    {:ok, m} = Machine.run(%Machine{}, [{:jmp, 1}])
+    assert %Machine{pointer: 1, acc: 0} = m
+
+    {:wrong_pointer, m} = Machine.run(%Machine{}, [{:jmp, 4}])
     assert %Machine{pointer: 4, acc: 0} = m
 
-    m = Machine.run(%Machine{}, [{:jmp, -8}])
+    {:wrong_pointer, m} = Machine.run(%Machine{}, [{:jmp, -8}])
     assert %Machine{pointer: -8, acc: 0} = m
   end
   
   test "handle nop instruction" do
-    m = Machine.run(%Machine{}, [{:nop, 0}])
+    {:ok, m} = Machine.run(%Machine{}, [{:nop, 0}])
     assert %Machine{pointer: 1, acc: 0} = m
 
-    m = Machine.run(%Machine{}, [{:nop, 99}])
+    {:ok, m} = Machine.run(%Machine{}, [{:nop, 99}])
     assert %Machine{pointer: 1, acc: 0} = m
   end
 
@@ -64,12 +67,12 @@ defmodule Advent8Test do
     jmp -4
     acc +2
     """
-    m = Advent8.run_on_machine(stream_of(simple_program))
-    assert m == %Machine{pointer: 9, acc: 7, history: [8, 4, 3, 7, 6, 2, 1, 0]} 
+    {:ok, m} = Advent8.run_on_machine(stream_of(simple_program))
+    assert m == %Machine{pointer: 9, acc: 7, history: [8, 4, 3, 7, 6, 2, 1, 0]}
   end
 
   test "halt on infinite loop (operation already executed)" do
-    m = Advent8.run_on_machine(stream_of(@loop_example_program))
+    {:loop, m} = Advent8.run_on_machine(stream_of(@loop_example_program))
     assert m.acc == 5
   end
 end
