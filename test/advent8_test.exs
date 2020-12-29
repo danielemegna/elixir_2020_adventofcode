@@ -15,6 +15,10 @@ defmodule Advent8Test do
 
   defp stream_of(content), do: content |> String.split("\n", trim: true) |> Stream.map(&(&1))
 
+  test "resolve first part" do
+    assert Advent8.resolve_first_part() == 2058
+  end
+
   test "parse instructions" do
     actual = Advent8.parse_instructions(stream_of(@loop_example_program))
     assert actual == [
@@ -61,5 +65,10 @@ defmodule Advent8Test do
     """
     m = Advent8.run_on_machine(stream_of(simple_program))
     assert m == %Machine{pointer: 54, acc: 5, history: [4, 3, 7, 6, 2, 1, 0]}
+  end
+
+  test "halt on infinite loop (operation already executed)" do
+    m = Advent8.run_on_machine(stream_of(@loop_example_program))
+    assert m.acc == 5
   end
 end

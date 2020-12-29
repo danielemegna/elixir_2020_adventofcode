@@ -5,8 +5,10 @@ defmodule Machine do
     i = Enum.at(instructions, m.pointer)
     m = run(m, i) |> Map.put(:history, [m.pointer | m.history])
 
-    if should_halt(m, instructions), do: m,
-    else: run(m, instructions)
+    cond do
+      should_halt?(m, instructions) -> m
+      true -> run(m, instructions)
+    end
   end
 
   def run(%Machine{} = m, {:acc, v}), do:
@@ -18,13 +20,21 @@ defmodule Machine do
   def run(%Machine{} = m, {:nop, _}), do:
     %{m | pointer: m.pointer+1}
 
-  defp should_halt(%Machine{} = m, instructions) do
-    m.pointer < 0 || m.pointer >= Enum.count(instructions)
+  defp should_halt?(%Machine{} = m, instructions) do
+    m.pointer in m.history ||
+    m.pointer < 0 ||
+    m.pointer >= Enum.count(instructions)
   end
 
 end
 
 defmodule Advent8 do
+
+  def resolve_first_part() do
+    read_boot_code_file()
+    |> run_on_machine()
+    |> Map.get(:acc)
+  end
 
   def run_on_machine(instructions_stream) do
     instructions = parse_instructions(instructions_stream)
@@ -36,6 +46,11 @@ defmodule Advent8 do
       [op, val] = String.split(line)
       {String.to_atom(op), String.to_integer(val)}
     end)
+  end
+
+  defp read_boot_code_file do
+    File.stream!("advent8.txt")
+    |> Stream.map(&String.trim/1)
   end
 
 end
