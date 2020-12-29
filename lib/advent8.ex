@@ -25,6 +25,11 @@ defmodule Machine do
 end
 
 defmodule Advent8 do
+
+  def run_on_machine(instructions_stream) do
+    instructions = parse_instructions(instructions_stream)
+    %Machine{} |> Machine.run(instructions)
+  end
   
   def parse_instructions(stream) do
     Enum.map(stream, fn line ->

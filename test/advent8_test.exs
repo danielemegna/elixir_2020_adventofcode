@@ -47,4 +47,19 @@ defmodule Advent8Test do
     m = Machine.run(%Machine{}, [{:nop, 99}])
     assert m == %Machine{pointer: 1, acc: 0}
   end
+
+  test "run a simple program" do
+    simple_program = """
+    nop +0
+    acc +1
+    jmp +4
+    acc +3
+    jmp +50
+    nop +0
+    acc +1
+    jmp -4
+    """
+    m = Advent8.run_on_machine(stream_of(simple_program))
+    assert m == %Machine{pointer: 54, acc: 5}
+  end
 end
