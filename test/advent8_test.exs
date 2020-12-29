@@ -19,6 +19,10 @@ defmodule Advent8Test do
     assert Advent8.resolve_first_part() == 2058
   end
 
+  test "resolve second part" do
+    assert Advent8.resolve_second_part() == 1000
+  end
+
   test "parse instructions" do
     actual = Advent8.parse_instructions(stream_of(@loop_example_program))
     assert actual == [
@@ -74,5 +78,10 @@ defmodule Advent8Test do
   test "halt on infinite loop (operation already executed)" do
     {:loop, m} = Advent8.run_on_machine(stream_of(@loop_example_program))
     assert m.acc == 5
+  end
+
+  test "try to fix the infinite loop" do
+    {:ok, m} = Advent8.run_corrupted_program(stream_of(@loop_example_program))
+    assert m.acc == 8
   end
 end

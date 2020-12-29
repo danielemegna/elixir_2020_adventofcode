@@ -45,6 +45,30 @@ defmodule Advent8 do
     machine.acc
   end
 
+  def resolve_second_part() do
+    {:ok, machine} = read_boot_code_file()
+    |> run_corrupted_program()
+
+    machine.acc
+  end
+
+  def run_corrupted_program(instructions_stream) do
+    instructions = parse_instructions(instructions_stream)
+
+    instructions
+    |> Stream.with_index
+    |> Stream.filter(fn {{op,_v},_index} -> op in [:nop, :jmp] end)
+    |> Stream.map(fn {_,op_index} -> op_index end)
+    |> Stream.map(fn op_index ->
+      instructions |> List.update_at(op_index, fn
+        {:nop, v} -> {:jmp, v}
+        {:jmp, v} -> {:nop, v}
+      end)
+    end)
+    |> Stream.map(&(Machine.run(%Machine{}, &1)))
+    |> Enum.find(&(match?({:ok, _}, &1)))
+  end
+
   def run_on_machine(instructions_stream) do
     instructions = parse_instructions(instructions_stream)
     %Machine{} |> Machine.run(instructions)
