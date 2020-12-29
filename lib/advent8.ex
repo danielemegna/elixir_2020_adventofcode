@@ -1,9 +1,9 @@
 defmodule Machine do
-  defstruct [pointer: 0, acc: 0]
+  defstruct [pointer: 0, acc: 0, history: []]
 
   def run(%Machine{} = m, instructions) when is_list(instructions) do
     i = Enum.at(instructions, m.pointer)
-    m = run(m, i)
+    m = run(m, i) |> Map.put(:history, [m.pointer | m.history])
 
     if should_halt(m, instructions), do: m,
     else: run(m, instructions)

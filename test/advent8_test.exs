@@ -26,26 +26,26 @@ defmodule Advent8Test do
 
   test "single acc instruction program" do
     m = %Machine{}
-    assert m == %Machine{pointer: 0, acc: 0}
+    assert %Machine{pointer: 0, acc: 0} = m
 
     m = Machine.run(m, [{:acc, 2}])
-    assert m == %Machine{pointer: 1, acc: 2}
+    assert %Machine{pointer: 1, acc: 2} = m
   end
 
   test "handle jmp instruction" do
     m = Machine.run(%Machine{}, [{:jmp, 4}])
-    assert m == %Machine{pointer: 4, acc: 0}
+    assert %Machine{pointer: 4, acc: 0} = m
 
     m = Machine.run(%Machine{}, [{:jmp, -8}])
-    assert m == %Machine{pointer: -8, acc: 0}
+    assert %Machine{pointer: -8, acc: 0} = m
   end
   
   test "handle nop instruction" do
     m = Machine.run(%Machine{}, [{:nop, 0}])
-    assert m == %Machine{pointer: 1, acc: 0}
+    assert %Machine{pointer: 1, acc: 0} = m
 
     m = Machine.run(%Machine{}, [{:nop, 99}])
-    assert m == %Machine{pointer: 1, acc: 0}
+    assert %Machine{pointer: 1, acc: 0} = m
   end
 
   test "run a simple program" do
@@ -60,6 +60,6 @@ defmodule Advent8Test do
     jmp -4
     """
     m = Advent8.run_on_machine(stream_of(simple_program))
-    assert m == %Machine{pointer: 54, acc: 5}
+    assert m == %Machine{pointer: 54, acc: 5, history: [4, 3, 7, 6, 2, 1, 0]}
   end
 end
