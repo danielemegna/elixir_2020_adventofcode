@@ -17,6 +17,91 @@ defmodule Advent11Test do
 
   end
 
+  describe "final state from initial map" do
+   
+    test "with already stable map" do
+      initial_map = map_from("""
+      #.#L.L#.##
+      #LLL#LL.L#
+      L.#.L..#..
+      #L##.##.L#
+      #.#L.LL.LL
+      #.#L#L#.##
+      ..L.L.....
+      #L#L##L#L#
+      #.LLLLLL.L
+      #.#L#L#.##
+      """
+      )
+
+      assert Advent11.final_state_for_map(initial_map) == initial_map
+    end
+
+    test "with provided example missing one round" do
+      initial_map = map_from("""
+      #.#L.L#.##
+      #LLL#LL.L#
+      L.L.L..#..
+      #LLL.##.L#
+      #.LL.LL.LL
+      #.LL#L#.##
+      ..L.L.....
+      #L#LLLL#L#
+      #.LLLLLL.L
+      #.#L#L#.##
+      """
+      )
+
+      final_map = Advent11.final_state_for_map(initial_map)
+
+      assert final_map == map_from("""
+      #.#L.L#.##
+      #LLL#LL.L#
+      L.#.L..#..
+      #L##.##.L#
+      #.#L.LL.LL
+      #.#L#L#.##
+      ..L.L.....
+      #L#L##L#L#
+      #.LLLLLL.L
+      #.#L#L#.##
+      """)
+    end
+
+    @tag :skip
+    test "with provided example from empty map" do
+      initial_map = map_from("""
+      L.LL.LL.LL
+      LLLLLLL.LL
+      L.L.L..L..
+      LLLL.LL.LL
+      L.LL.LL.LL
+      L.LLLLL.LL
+      ..L.L.....
+      LLLLLLLLLL
+      L.LLLLLL.L
+      L.LLLLL.LL
+      """
+      )
+
+      final_map = Advent11.final_state_for_map(initial_map)
+
+      assert final_map == map_from("""
+      #.#L.L#.##
+      #LLL#LL.L#
+      L.#.L..#..
+      #L##.##.L#
+      #.#L.LL.LL
+      #.#L#L#.##
+      ..L.L.....
+      #L#L##L#L#
+      #.LLLLLL.L
+      #.#L#L#.##
+      """)
+    end
+
+  end
+
   describe "execute a round" do
     test "on only floor map should not change" do
       initial_map = map_from("""

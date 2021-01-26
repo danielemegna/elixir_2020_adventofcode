@@ -56,6 +56,10 @@ defmodule Advent11 do
     end
   end
 
+  def final_state_for_map(map) do
+    execute_round_on(map)
+  end
+
   def execute_round_on(initial_map) do
     0..WaitingArea.height(initial_map)-1
     |> Enum.flat_map(fn y ->
