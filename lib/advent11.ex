@@ -1,5 +1,5 @@
 defmodule WaitingAreaMap do
-  
+
   def build_from(string_map_lines) do
     string_map_lines
     |> Enum.with_index
@@ -51,15 +51,27 @@ end
 
 defmodule Advent11 do
 
-  def count_occupied_seats_from(map) do
-    case map do
-      "." -> 0
-      _ -> 1
-    end
+  def resolve_first_part() do
+    read_waiting_area_map_lines()
+    |> occupied_seats_on_stable_state()
   end
 
-  def final_state_for_map(map) do
-    execute_round_on(map)
+  def occupied_seats_on_stable_state(string_map_lines) do
+    string_map_lines
+    |> WaitingAreaMap.build_from()
+    |> stable_state_for_map()
+    |> Enum.reduce(0, fn {_y, row}, acc ->
+      acc + Enum.count(Map.values(row), fn state -> state == :occupied end)
+    end)
+  end
+
+  def stable_state_for_map(map) do
+    new_map = execute_round_on(map)
+    if new_map == map do
+      new_map
+    else
+      stable_state_for_map(new_map)
+    end
   end
 
   def execute_round_on(initial_map) do
@@ -95,6 +107,11 @@ defmodule Advent11 do
       :occupied when occupied_adiacents > 3 -> :free
       state -> state
     end
+  end
+
+  defp read_waiting_area_map_lines() do
+    File.stream!("advent11.txt")
+    |> Stream.map(&String.trim/1)
   end
 
 end

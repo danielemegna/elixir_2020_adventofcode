@@ -1,23 +1,44 @@
 defmodule Advent11Test do
   use ExUnit.Case
 
+  test "resolve first part" do
+    assert Advent11.resolve_first_part() == 2338
+  end
+
   describe "after several evolutions" do
 
     test "single floor position has no occupied seats" do
-      assert Advent11.count_occupied_seats_from(".") == 0
+      assert Advent11.occupied_seats_on_stable_state(stream_of(".")) == 0
     end
 
     test "single free seat should become occupied" do
-      assert Advent11.count_occupied_seats_from("L") == 1
+      assert Advent11.occupied_seats_on_stable_state(stream_of("L")) == 1
     end
 
     test "single occupied seat should remain occupied" do
-      assert Advent11.count_occupied_seats_from("#") == 1
+      assert Advent11.occupied_seats_on_stable_state(stream_of("#")) == 1
+    end
+
+    test "provided example empty map should returns 37" do
+      map = """
+      L.LL.LL.LL
+      LLLLLLL.LL
+      L.L.L..L..
+      LLLL.LL.LL
+      L.LL.LL.LL
+      L.LLLLL.LL
+      ..L.L.....
+      LLLLLLLLLL
+      L.LLLLLL.L
+      L.LLLLL.LL
+      """
+
+      assert Advent11.occupied_seats_on_stable_state(stream_of(map)) == 37
     end
 
   end
 
-  describe "final state from initial map" do
+  describe "stable state from initial map" do
    
     test "with already stable map" do
       initial_map = map_from("""
@@ -34,7 +55,7 @@ defmodule Advent11Test do
       """
       )
 
-      assert Advent11.final_state_for_map(initial_map) == initial_map
+      assert Advent11.stable_state_for_map(initial_map) == initial_map
     end
 
     test "with provided example missing one round" do
@@ -52,9 +73,9 @@ defmodule Advent11Test do
       """
       )
 
-      final_map = Advent11.final_state_for_map(initial_map)
+      stable_map = Advent11.stable_state_for_map(initial_map)
 
-      assert final_map == map_from("""
+      assert stable_map == map_from("""
       #.#L.L#.##
       #LLL#LL.L#
       L.#.L..#..
@@ -68,8 +89,7 @@ defmodule Advent11Test do
       """)
     end
 
-    @tag :skip
-    test "with provided example from empty map" do
+    test "with provided example empty map" do
       initial_map = map_from("""
       L.LL.LL.LL
       LLLLLLL.LL
@@ -84,9 +104,9 @@ defmodule Advent11Test do
       """
       )
 
-      final_map = Advent11.final_state_for_map(initial_map)
+      stable_map = Advent11.stable_state_for_map(initial_map)
 
-      assert final_map == map_from("""
+      assert stable_map == map_from("""
       #.#L.L#.##
       #LLL#LL.L#
       L.#.L..#..
