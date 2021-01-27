@@ -1,6 +1,6 @@
-defmodule WaitingArea do
+defmodule WaitingAreaMap do
   
-  def build_map_from(string_map_lines) do
+  def build_from(string_map_lines) do
     string_map_lines
     |> Enum.with_index
     |> Enum.map(fn {line, y} -> 
@@ -47,6 +47,8 @@ defmodule WaitingArea do
 
 end
 
+######################################################
+
 defmodule Advent11 do
 
   def count_occupied_seats_from(map) do
@@ -61,16 +63,16 @@ defmodule Advent11 do
   end
 
   def execute_round_on(initial_map) do
-    0..WaitingArea.height(initial_map)-1
+    0..WaitingAreaMap.height(initial_map)-1
     |> Enum.flat_map(fn y ->
-      0..WaitingArea.width(initial_map)-1
+      0..WaitingAreaMap.width(initial_map)-1
       |> Enum.map(fn x ->
         {x, y}
       end)
     end)
     |> Enum.reduce(initial_map, fn {x, y}, acc ->
       new_seat_state = new_seat_state_for(initial_map, x, y)
-      WaitingArea.update(acc, x, y, new_seat_state)
+      WaitingAreaMap.update(acc, x, y, new_seat_state)
     end)
   end
 
@@ -85,10 +87,10 @@ defmodule Advent11 do
       {x+1, y},
       {x+1, y+1}
     ] |> Enum.count(fn {x, y} ->
-      WaitingArea.get(map, x, y) == :occupied
+      WaitingAreaMap.get(map, x, y) == :occupied
     end)
 
-    case WaitingArea.get(map, x, y) do
+    case WaitingAreaMap.get(map, x, y) do
       :free when occupied_adiacents == 0 -> :occupied
       :occupied when occupied_adiacents > 3 -> :free
       state -> state

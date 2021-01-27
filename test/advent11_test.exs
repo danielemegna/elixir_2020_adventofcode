@@ -183,7 +183,7 @@ defmodule Advent11Test do
       .###.L
       """
 
-      waiting_area_map = WaitingArea.build_map_from(stream_of(waiting_area_string_map))
+      waiting_area_map = WaitingAreaMap.build_from(stream_of(waiting_area_string_map))
 
       assert waiting_area_map == %{
         0 => %{ 0 => :free, 1 => :floor, 2 => :free, 3 => :occupied, 4 => :floor, 5 => :free },
@@ -201,14 +201,14 @@ defmodule Advent11Test do
       .###.L
       """)
 
-      assert WaitingArea.get(map, 0, 0) == :free
-      assert WaitingArea.get(map, 3, 0) == :occupied
-      assert WaitingArea.get(map, 0, 3) == :floor
-      assert WaitingArea.get(map, 5, 1) == :free
-      assert WaitingArea.get(map, -1, 0) == nil
-      assert WaitingArea.get(map, 0, -1) == nil
-      assert WaitingArea.get(map, 6, 0) == nil
-      assert WaitingArea.get(map, 0, 6) == nil
+      assert WaitingAreaMap.get(map, 0, 0) == :free
+      assert WaitingAreaMap.get(map, 3, 0) == :occupied
+      assert WaitingAreaMap.get(map, 0, 3) == :floor
+      assert WaitingAreaMap.get(map, 5, 1) == :free
+      assert WaitingAreaMap.get(map, -1, 0) == nil
+      assert WaitingAreaMap.get(map, 0, -1) == nil
+      assert WaitingAreaMap.get(map, 6, 0) == nil
+      assert WaitingAreaMap.get(map, 0, 6) == nil
     end
 
     test "get size" do
@@ -219,8 +219,8 @@ defmodule Advent11Test do
       .###.L
       """)
 
-      assert WaitingArea.width(map) == 6
-      assert WaitingArea.height(map) == 4
+      assert WaitingAreaMap.width(map) == 6
+      assert WaitingAreaMap.height(map) == 4
     end
 
     test "update seat state" do
@@ -232,10 +232,10 @@ defmodule Advent11Test do
       """)
 
       new_map = map
-      |> WaitingArea.update(0, 0, :occupied)
-      |> WaitingArea.update(2, 0, :occupied)
-      |> WaitingArea.update(3, 1, :occupied)
-      |> WaitingArea.update(1, 3, :free)
+      |> WaitingAreaMap.update(0, 0, :occupied)
+      |> WaitingAreaMap.update(2, 0, :occupied)
+      |> WaitingAreaMap.update(3, 1, :occupied)
+      |> WaitingAreaMap.update(1, 3, :free)
 
       assert new_map == map_from("""
       #.##.L
@@ -249,6 +249,6 @@ defmodule Advent11Test do
 
   end
 
-  defp map_from(multiline_string_map), do: WaitingArea.build_map_from(stream_of(multiline_string_map))
+  defp map_from(multiline_string_map), do: WaitingAreaMap.build_from(stream_of(multiline_string_map))
 
 end
