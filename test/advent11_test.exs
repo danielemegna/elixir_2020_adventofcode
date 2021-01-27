@@ -231,18 +231,6 @@ defmodule Advent11Test do
       assert WaitingAreaMap.get(map, 0, 6) == nil
     end
 
-    test "get size" do
-      map = map_from("""
-      L.L#.L
-      LLLLLL
-      L.L.L.
-      .###.L
-      """)
-
-      assert WaitingAreaMap.width(map) == 6
-      assert WaitingAreaMap.height(map) == 4
-    end
-
     test "update seat state" do
       map = map_from("""
       L.L#.L

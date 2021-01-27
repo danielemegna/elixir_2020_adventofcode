@@ -37,14 +37,6 @@ defmodule WaitingAreaMap do
     Map.put(map, y, new_row)
   end
 
-  def height(map) do
-    Enum.count(map)
-  end
-
-  def width(map) do
-    Map.get(map, 0) |> Enum.count
-  end
-
 end
 
 ######################################################
@@ -75,20 +67,18 @@ defmodule Advent11 do
   end
 
   def execute_round_on(initial_map) do
-    0..WaitingAreaMap.height(initial_map)-1
-    |> Enum.flat_map(fn y ->
-      0..WaitingAreaMap.width(initial_map)-1
-      |> Enum.map(fn x ->
-        {x, y}
+    Enum.reduce(initial_map, initial_map, fn {y, row}, acc ->
+      Enum.reduce(row, acc, fn {x, current_state}, acc ->
+        new_seat_state_for(initial_map, x, y, current_state)
+        |> case do
+          ^current_state -> acc
+          new_state -> WaitingAreaMap.update(acc, x, y, new_state)
+        end
       end)
-    end)
-    |> Enum.reduce(initial_map, fn {x, y}, acc ->
-      new_seat_state = new_seat_state_for(initial_map, x, y)
-      WaitingAreaMap.update(acc, x, y, new_seat_state)
     end)
   end
 
-  defp new_seat_state_for(map, x, y) do
+  defp new_seat_state_for(map, x, y, current_state) do
     occupied_adiacents = [
       {x-1, y-1},
       {x-1, y},
@@ -102,7 +92,7 @@ defmodule Advent11 do
       WaitingAreaMap.get(map, x, y) == :occupied
     end)
 
-    case WaitingAreaMap.get(map, x, y) do
+    case current_state do
       :free when occupied_adiacents == 0 -> :occupied
       :occupied when occupied_adiacents > 3 -> :free
       state -> state
