@@ -206,10 +206,10 @@ defmodule Advent11Test do
       waiting_area_map = WaitingAreaMap.build_from(stream_of(waiting_area_string_map))
 
       assert waiting_area_map == %{
-        0 => %{ 0 => :free, 1 => :floor, 2 => :free, 3 => :occupied, 4 => :floor, 5 => :free },
-        1 => %{ 0 => :free, 1 => :free, 2 => :free, 3 => :free, 4 => :free, 5 => :free },
-        2 => %{ 0 => :free, 1 => :floor, 2 => :free, 3 => :floor, 4 => :free, 5 => :floor },
-        3 => %{ 0 => :floor, 1 => :occupied, 2 => :occupied, 3 => :occupied, 4 => :floor, 5 => :free }
+        {0, 0} => :free, {1, 0} => :floor, {2, 0} => :free, {3, 0} => :occupied, {4, 0} => :floor, {5, 0} => :free,
+        {0, 1} => :free, {1, 1} => :free, {2, 1} => :free, {3, 1} => :free, {4, 1} => :free, {5, 1} => :free,
+        {0, 2} => :free, {1, 2} => :floor, {2, 2} => :free, {3, 2} => :floor, {4, 2} => :free, {5, 2} => :floor,
+        {0, 3} => :floor, {1, 3} => :occupied, {2, 3} => :occupied, {3, 3} => :occupied, {4, 3} => :floor, {5, 3} => :free
       }
     end
 

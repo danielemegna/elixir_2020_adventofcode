@@ -3,8 +3,8 @@ defmodule WaitingAreaMap do
   def build_from(string_map_lines) do
     string_map_lines
     |> Enum.with_index
-    |> Enum.map(fn {line, y} -> 
-      map_row = line
+    |> Enum.flat_map(fn {line, y} -> 
+      line
       |> String.graphemes()
       |> Enum.with_index
       |> Enum.map(fn {char, x} ->
@@ -13,28 +13,18 @@ defmodule WaitingAreaMap do
           "L" -> :free
           "#" -> :occupied
         end
-        {x, seat_state}
+        {{x, y}, seat_state}
       end)
-      |> Map.new
-
-      {y, map_row}
     end)
     |> Map.new
   end
   
   def get(map, x, y) do
-    case Map.get(map, y) do
-      nil -> nil
-      row ->  Map.get(row, x)
-    end
+    Map.get(map, {x, y})
   end
 
   def update(map, x, y, seat_state) do
-    new_row = map
-    |> Map.get(y)
-    |> Map.put(x, seat_state)
-
-    Map.put(map, y, new_row)
+    Map.put(map, {x, y}, seat_state)
   end
 
 end
@@ -52,9 +42,8 @@ defmodule Advent11 do
     string_map_lines
     |> WaitingAreaMap.build_from()
     |> stable_state_for_map()
-    |> Enum.reduce(0, fn {_y, row}, acc ->
-      acc + Enum.count(Map.values(row), fn state -> state == :occupied end)
-    end)
+    |> Map.values()
+    |> Enum.count(fn state -> state == :occupied end)
   end
 
   def stable_state_for_map(map) do
@@ -67,28 +56,22 @@ defmodule Advent11 do
   end
 
   def execute_round_on(initial_map) do
-    Enum.reduce(initial_map, initial_map, fn {y, row}, acc ->
-      Enum.reduce(row, acc, fn {x, current_state}, acc ->
-        new_seat_state_for(initial_map, x, y, current_state)
-        |> case do
-          ^current_state -> acc
-          new_state -> WaitingAreaMap.update(acc, x, y, new_state)
-        end
-      end)
+    Enum.reduce(initial_map, initial_map, fn {{x, y}, current_state}, acc ->
+      new_seat_state_for(initial_map, x, y, current_state)
+      |> case do
+        ^current_state -> acc
+        new_state -> WaitingAreaMap.update(acc, x, y, new_state)
+      end
     end)
   end
 
   defp new_seat_state_for(map, x, y, current_state) do
     occupied_adiacents = [
-      {x-1, y-1},
-      {x-1, y},
-      {x-1, y+1},
-      {x, y+1},
-      {x, y-1},
-      {x+1, y-1},
-      {x+1, y},
-      {x+1, y+1}
-    ] |> Enum.count(fn {x, y} ->
+      {x-1, y-1}, {x-1, y}, {x-1, y+1},
+      {x,   y+1},           {x,   y-1},
+      {x+1, y-1}, {x+1, y}, {x+1, y+1}
+    ]
+    |> Enum.count(fn {x, y} ->
       WaitingAreaMap.get(map, x, y) == :occupied
     end)
 
