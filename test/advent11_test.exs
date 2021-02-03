@@ -5,19 +5,7 @@ defmodule Advent11Test do
     assert Advent11.resolve_first_part() == 2338
   end
 
-  describe "after several evolutions" do
-
-    test "single floor position has no occupied seats" do
-      assert Advent11.occupied_seats_on_stable_state(stream_of(".")) == 0
-    end
-
-    test "single free seat should become occupied" do
-      assert Advent11.occupied_seats_on_stable_state(stream_of("L")) == 1
-    end
-
-    test "single occupied seat should remain occupied" do
-      assert Advent11.occupied_seats_on_stable_state(stream_of("#")) == 1
-    end
+  describe "after several evolutions using adjacent seats transformation rule" do
 
     test "provided example empty map should returns 37" do
       map = """
@@ -33,12 +21,12 @@ defmodule Advent11Test do
       L.LLLLL.LL
       """
 
-      assert Advent11.occupied_seats_on_stable_state(stream_of(map)) == 37
+      assert Advent11.occupied_seats_on_stable_state(stream_of(map), AdjacentSeatsTransformationRule) == 37
     end
 
   end
 
-  describe "stable state from initial map" do
+  describe "stable state from initial map using adjacent seats transformation rule" do
    
     test "with already stable map" do
       initial_map = map_from("""
@@ -55,7 +43,7 @@ defmodule Advent11Test do
       """
       )
 
-      assert Advent11.stable_state_for_map(initial_map) == initial_map
+      assert Advent11.stable_state_for_map(initial_map, AdjacentSeatsTransformationRule) == initial_map
     end
 
     test "with provided example missing one round" do
@@ -73,7 +61,7 @@ defmodule Advent11Test do
       """
       )
 
-      stable_map = Advent11.stable_state_for_map(initial_map)
+      stable_map = Advent11.stable_state_for_map(initial_map, AdjacentSeatsTransformationRule)
 
       assert stable_map == map_from("""
       #.#L.L#.##
@@ -104,7 +92,7 @@ defmodule Advent11Test do
       """
       )
 
-      stable_map = Advent11.stable_state_for_map(initial_map)
+      stable_map = Advent11.stable_state_for_map(initial_map, AdjacentSeatsTransformationRule)
 
       assert stable_map == map_from("""
       #.#L.L#.##
@@ -122,7 +110,8 @@ defmodule Advent11Test do
 
   end
 
-  describe "execute a round" do
+  describe "execute a round using adjacent seats transformation rule" do
+
     test "on only floor map should not change" do
       initial_map = map_from("""
       ....
@@ -130,7 +119,7 @@ defmodule Advent11Test do
       ....
       """
       )
-      assert Advent11.execute_round_on(initial_map) == initial_map
+      assert Advent11.execute_round_on(initial_map, AdjacentSeatsTransformationRule) == initial_map
     end
 
     test "free seats with no occupied adjacents should become occupied" do
@@ -139,7 +128,7 @@ defmodule Advent11Test do
       LL
       """)
 
-      actual = Advent11.execute_round_on(initial_map)
+      actual = Advent11.execute_round_on(initial_map, AdjacentSeatsTransformationRule)
 
       expected = map_from("""
       ##
@@ -155,7 +144,7 @@ defmodule Advent11Test do
       LLL
       """)
 
-      assert Advent11.execute_round_on(initial_map) == initial_map
+      assert Advent11.execute_round_on(initial_map, AdjacentSeatsTransformationRule) == initial_map
     end
 
     test "occupied seats with four (or more) occupied adjacents should become free" do
@@ -165,7 +154,7 @@ defmodule Advent11Test do
       #L#
       """)
 
-      actual = Advent11.execute_round_on(initial_map)
+      actual = Advent11.execute_round_on(initial_map, AdjacentSeatsTransformationRule)
 
       expected = map_from("""
       LL#
@@ -189,8 +178,9 @@ defmodule Advent11Test do
       #.#L#L#.##
       """
       )
-      assert Advent11.execute_round_on(initial_map) == initial_map
+      assert Advent11.execute_round_on(initial_map, AdjacentSeatsTransformationRule) == initial_map
     end
+
   end
 
   describe "waiting area" do 
