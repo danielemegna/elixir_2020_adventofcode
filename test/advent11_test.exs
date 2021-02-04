@@ -1,11 +1,17 @@
 defmodule Advent11Test do
   use ExUnit.Case
 
+  @tag :skip # too slow, to be improved
   test "resolve first part" do
     assert Advent11.resolve_first_part() == 2338
   end
 
-  describe "after several evolutions using adjacent seats transformation rule" do
+  @tag :skip # too slow, to be improved
+  test "resolve second part" do
+    assert Advent11.resolve_second_part() == 2134
+  end
+
+  describe "at stable state using adjacent seats transformation rule" do
 
     test "provided example empty map should returns 37" do
       map = """
@@ -22,6 +28,27 @@ defmodule Advent11Test do
       """
 
       assert Advent11.occupied_seats_on_stable_state(stream_of(map), AdjacentSeatsTransformationRule) == 37
+    end
+
+  end
+
+  describe "at stable state using visibile seats transformation rule" do
+
+    test "provided example empty map should returns 26" do
+      map = """
+      L.LL.LL.LL
+      LLLLLLL.LL
+      L.L.L..L..
+      LLLL.LL.LL
+      L.LL.LL.LL
+      L.LLLLL.LL
+      ..L.L.....
+      LLLLLLLLLL
+      L.LLLLLL.L
+      L.LLLLL.LL
+      """
+
+      assert Advent11.occupied_seats_on_stable_state(stream_of(map), VisibleSeatsTransformationRule) == 26
     end
 
   end
@@ -110,6 +137,41 @@ defmodule Advent11Test do
 
   end
 
+  describe "stable state from initial map using visible seats transformation rule" do
+
+    test "with provided example empty map" do
+      initial_map = map_from("""
+      L.LL.LL.LL
+      LLLLLLL.LL
+      L.L.L..L..
+      LLLL.LL.LL
+      L.LL.LL.LL
+      L.LLLLL.LL
+      ..L.L.....
+      LLLLLLLLLL
+      L.LLLLLL.L
+      L.LLLLL.LL
+      """
+      )
+
+      stable_map = Advent11.stable_state_for_map(initial_map, VisibleSeatsTransformationRule)
+
+      assert stable_map == map_from("""
+      #.L#.L#.L#
+      #LLLLLL.LL
+      L.L.L..#..
+      ##L#.#L.L#
+      L.L#.LL.L#
+      #.LLLL#.LL
+      ..#.L.....
+      LLL###LLL#
+      #.LLLLL#.L
+      #.L#LL#.L#
+      """)
+    end
+
+  end
+
   describe "execute a round using adjacent seats transformation rule" do
 
     test "on only floor map should not change" do
@@ -179,6 +241,90 @@ defmodule Advent11Test do
       """
       )
       assert Advent11.execute_round_on(initial_map, AdjacentSeatsTransformationRule) == initial_map
+    end
+
+  end
+
+  describe "execute a round using visible seats transformation rule" do
+
+    test "on only floor map should not change" do
+      initial_map = map_from("""
+      ....
+      ....
+      ....
+      """
+      )
+      actual = Advent11.execute_round_on(initial_map, VisibleSeatsTransformationRule)
+      assert actual == initial_map
+    end
+
+    test "free seats with no visible occupied seats should become occupied" do
+      initial_map = map_from("""
+      LL
+      LL
+      """)
+
+      actual = Advent11.execute_round_on(initial_map, VisibleSeatsTransformationRule)
+
+      expected = map_from("""
+      ##
+      ##
+      """)
+      assert actual == expected
+    end
+
+    test "free seats with a visible occupied seat should remain free" do
+      initial_map = map_from("""
+      ..#..
+      .....
+      ..L..
+      .....
+      .....
+      """)
+
+      actual = Advent11.execute_round_on(initial_map, VisibleSeatsTransformationRule)
+
+      expected = map_from("""
+      ..#..
+      .....
+      ..L..
+      .....
+      .....
+      """)
+      assert actual == expected
+    end
+
+    test "occupied seats with four visible occupied seats should remain occupied" do
+      initial_map = map_from("""
+      ..#..
+      .....
+      .##.#
+      .....
+      #....
+      """)
+      actual = Advent11.execute_round_on(initial_map, VisibleSeatsTransformationRule)
+      assert actual == initial_map
+    end
+
+    test "occupied seats with five (or more) visible occupied seats should become free" do
+      initial_map = map_from("""
+      ..#..
+      .....
+      .##.#
+      ...#.
+      #....
+      """)
+
+      actual = Advent11.execute_round_on(initial_map, VisibleSeatsTransformationRule)
+
+      expected = map_from("""
+      ..#..
+      .....
+      .#L.#
+      ...#.
+      #....
+      """)
+      assert actual == expected
     end
 
   end
