@@ -70,7 +70,7 @@ defmodule Advent11Test do
       """
       )
 
-      assert Advent11.stable_state_for_map(initial_map, AdjacentSeatsTransformationRule) == initial_map
+      assert Advent11.stabilize(initial_map, AdjacentSeatsTransformationRule) == initial_map
     end
 
     test "with provided example missing one round" do
@@ -88,7 +88,7 @@ defmodule Advent11Test do
       """
       )
 
-      stable_map = Advent11.stable_state_for_map(initial_map, AdjacentSeatsTransformationRule)
+      stable_map = Advent11.stabilize(initial_map, AdjacentSeatsTransformationRule)
 
       assert stable_map == map_from("""
       #.#L.L#.##
@@ -119,7 +119,7 @@ defmodule Advent11Test do
       """
       )
 
-      stable_map = Advent11.stable_state_for_map(initial_map, AdjacentSeatsTransformationRule)
+      stable_map = Advent11.stabilize(initial_map, AdjacentSeatsTransformationRule)
 
       assert stable_map == map_from("""
       #.#L.L#.##
@@ -154,7 +154,7 @@ defmodule Advent11Test do
       """
       )
 
-      stable_map = Advent11.stable_state_for_map(initial_map, VisibleSeatsTransformationRule)
+      stable_map = Advent11.stabilize(initial_map, VisibleSeatsTransformationRule)
 
       assert stable_map == map_from("""
       #.L#.L#.L#

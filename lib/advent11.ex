@@ -1,7 +1,7 @@
 defmodule WaitingAreaMap do
 
-  def build_from(string_map_lines) do
-    string_map_lines
+  def build_from(waiting_area_file_content) do
+    waiting_area_file_content
     |> Enum.with_index
     |> Enum.flat_map(fn {line, y} -> 
       line
@@ -93,29 +93,34 @@ end
 defmodule Advent11 do
 
   def resolve_first_part() do
-    read_waiting_area_map_lines()
+    read_waiting_area_file_content()
     |> occupied_seats_on_stable_state(AdjacentSeatsTransformationRule)
   end
 
   def resolve_second_part() do
-    read_waiting_area_map_lines()
+    read_waiting_area_file_content()
     |> occupied_seats_on_stable_state(VisibleSeatsTransformationRule)
   end
 
-  def occupied_seats_on_stable_state(string_map_lines, seat_transformation_rule) do
-    string_map_lines
-    |> WaitingAreaMap.build_from()
-    |> stable_state_for_map(seat_transformation_rule)
+  def occupied_seats_on_stable_state(waiting_area_file_content, seat_transformation_rule) do
+    stable_map = stabilize(waiting_area_file_content, seat_transformation_rule)
+
+    stable_map
     |> Map.values()
     |> Enum.count(fn state -> state == :occupied end)
   end
 
-  def stable_state_for_map(map, seat_transformation_rule) do
+  def stabilize(%Stream{} = waiting_area_file_content, seat_transformation_rule) do
+    map = WaitingAreaMap.build_from(waiting_area_file_content)
+    stabilize(map, seat_transformation_rule)
+  end
+
+  def stabilize(map, seat_transformation_rule) when is_map(map) do
     new_map = execute_round_on(map, seat_transformation_rule)
     if new_map == map do
       new_map
     else
-      stable_state_for_map(new_map, seat_transformation_rule)
+      stabilize(new_map, seat_transformation_rule)
     end
   end
 
@@ -129,7 +134,7 @@ defmodule Advent11 do
     end)
   end
 
-  defp read_waiting_area_map_lines() do
+  defp read_waiting_area_file_content() do
     File.stream!("advent11.txt")
     |> Stream.map(&String.trim/1)
   end
