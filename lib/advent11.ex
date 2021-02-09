@@ -58,14 +58,14 @@ defmodule VisibleSeatsTransformationRule do
 
   def new_state_for(map, x, y, current_state) do
     occupied_visibles = [
-      find_first_visibile(map, x, y, fn x, y, n -> {x, y+n} end),
-      find_first_visibile(map, x, y, fn x, y, n -> {x, y-n} end),
-      find_first_visibile(map, x, y, fn x, y, n -> {x+n, y} end),
-      find_first_visibile(map, x, y, fn x, y, n -> {x-n, y} end),
-      find_first_visibile(map, x, y, fn x, y, n -> {x+n, y+n} end),
-      find_first_visibile(map, x, y, fn x, y, n -> {x+n, y-n} end),
-      find_first_visibile(map, x, y, fn x, y, n -> {x-n, y+n} end),
-      find_first_visibile(map, x, y, fn x, y, n -> {x-n, y-n} end),
+      find_first_visibile(map, x, y, &south/3),
+      find_first_visibile(map, x, y, &north/3),
+      find_first_visibile(map, x, y, &east/3),
+      find_first_visibile(map, x, y, &west/3),
+      find_first_visibile(map, x, y, &south_east/3),
+      find_first_visibile(map, x, y, &north_east/3),
+      find_first_visibile(map, x, y, &south_west/3),
+      find_first_visibile(map, x, y, &north_west/3),
     ] |> Enum.count(&(&1 == :occupied))
 
     case current_state do
@@ -74,6 +74,15 @@ defmodule VisibleSeatsTransformationRule do
       state -> state
     end
   end
+
+  defp south(x, y, n), do: {x, y+n}
+  defp north(x, y, n), do: {x, y-n}
+  defp east(x, y, n), do: {x+n, y}
+  defp west(x, y, n), do: {x-n, y}
+  defp south_east(x, y, n), do: {x+n, y+n}
+  defp north_east(x, y, n), do: {x+n, y-n}
+  defp south_west(x, y, n), do: {x-n, y+n}
+  defp north_west(x, y, n), do: {x-n, y-n}
 
   defp find_first_visibile(map, x, y, direction_fn) do
     Stream.iterate(1, &(&1+1))
