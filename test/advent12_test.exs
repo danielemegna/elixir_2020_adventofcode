@@ -1,6 +1,21 @@
 defmodule Advent12Test do
   use ExUnit.Case
 
+  test "manhattan distance on provided example" do
+    commands = """
+    F10
+    N3
+    F7
+    R90
+    F11
+    """
+
+    assert Advent12.get_manhattan_distance_with(stream_of(commands)) == 25
+  end
+
+
+######################################################
+
   test "new ships start from x: 0 and y: 0" do
     ship = Ship.new()
     assert %{x: 0, y: 0} == ship.position
@@ -102,7 +117,6 @@ defmodule Advent12Test do
     end
   end
 
-
-  #defp stream_of(content), do: content |> String.split("\n", trim: true) |> Stream.map(&(&1))
+  defp stream_of(content), do: content |> String.split("\n", trim: true) |> Stream.map(&(&1))
 
 end

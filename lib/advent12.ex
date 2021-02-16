@@ -41,7 +41,18 @@ defmodule Ship do
   end
 end
 
+######################################################
+
 defmodule Advent12 do
+
+  def get_manhattan_distance_with(commands_stream) do
+    ship = commands_stream
+    |> Enum.reduce(Ship.new(), fn command, ship ->
+      Ship.move_by(ship, command)
+    end)
+
+    abs(ship.position.x) + abs(ship.position.y)
+  end
 
   #defp read_file() do
   #  File.stream!("advent12.txt")
