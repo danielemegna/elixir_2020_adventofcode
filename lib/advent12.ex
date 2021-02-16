@@ -1,9 +1,9 @@
 defmodule Ship do
-  @enforce_keys [:direction, :position]
+  @enforce_keys [:orientation, :position]
   defstruct @enforce_keys
 
-  def new(direction \\ :east) do
-    %Ship{direction: direction, position: %{x: 0, y: 0}}
+  def new(orientation \\ :east) do
+    %Ship{orientation: orientation, position: %{x: 0, y: 0}}
   end
 
   def move_by(ship, instruction) do
@@ -20,9 +20,9 @@ defmodule Ship do
     end
   end
 
-  defp move_forward(%Ship{direction: :east} = ship, steps), do: move_east(ship, steps)
-  defp move_forward(%Ship{direction: :north} = ship, steps), do: move_north(ship, steps)
-  defp move_forward(%Ship{direction: :south} = ship, steps), do: move_south(ship, steps)
+  defp move_forward(%Ship{orientation: :east} = ship, steps), do: move_east(ship, steps)
+  defp move_forward(%Ship{orientation: :north} = ship, steps), do: move_north(ship, steps)
+  defp move_forward(%Ship{orientation: :south} = ship, steps), do: move_south(ship, steps)
 
   defp move_north(ship, steps), do: put_in(ship.position.y, ship.position.y + steps)
   defp move_south(ship, steps), do: put_in(ship.position.y, ship.position.y - steps)
@@ -32,12 +32,12 @@ defmodule Ship do
   defp rotate_left(ship, degrees), do: rotate(ship, degrees, [:north, :west, :south, :east])
   defp rotate_right(ship, degrees), do: rotate(ship, degrees, [:north, :east, :south, :west])
 
-  defp rotate(ship, degrees, cardinalities_rotation_order) do
+  defp rotate(ship, degrees, orientation_rotation_order) do
     steps = trunc(degrees / 90)
-    current_direction_index = cardinalities_rotation_order |> Enum.find_index(&(&1 == ship.direction))
-    new_direction_index = Integer.mod(current_direction_index + steps, 4)
-    new_direction = Enum.at(cardinalities_rotation_order, new_direction_index)
-    put_in(ship.direction, new_direction)
+    current_orientation_index = orientation_rotation_order |> Enum.find_index(&(&1 == ship.orientation))
+    new_orientation_index = Integer.mod(current_orientation_index + steps, 4)
+    new_orientation = Enum.at(orientation_rotation_order, new_orientation_index)
+    put_in(ship.orientation, new_orientation)
   end
 end
 
