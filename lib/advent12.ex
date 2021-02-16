@@ -2,8 +2,8 @@ defmodule Ship do
   @enforce_keys [:orientation, :position]
   defstruct @enforce_keys
 
-  def new(orientation \\ :east) do
-    %Ship{orientation: orientation, position: %{x: 0, y: 0}}
+  def new() do
+    %Ship{orientation: :east, position: %{x: 0, y: 0}}
   end
 
   def move_by(%Ship{} = ship, instruction) do

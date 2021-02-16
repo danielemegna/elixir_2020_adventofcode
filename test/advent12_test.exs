@@ -61,19 +61,19 @@ defmodule Advent12Test do
     end
 
     test "a ship facing North" do
-      ship = Ship.new(:north)
+      ship = %Ship{Ship.new() | orientation: :north}
       moved_ship = Ship.move_by(ship, "F10")
       assert %Ship{orientation: :north, position: %{x: 0, y: 10}} == moved_ship
     end
 
     test "a ship facing South" do
-      ship = Ship.new(:south)
+      ship = %Ship{Ship.new() | orientation: :south}
       moved_ship = Ship.move_by(ship, "F16")
       assert %Ship{orientation: :south, position: %{x: 0, y: -16}} == moved_ship
     end
 
     test "a ship facing West" do
-      ship = Ship.new(:west)
+      ship = %Ship{Ship.new() | orientation: :west}
       moved_ship = Ship.move_by(ship, "F42")
       assert %Ship{orientation: :west, position: %{x: -42, y: 0}} == moved_ship
     end
@@ -99,31 +99,31 @@ defmodule Advent12Test do
   describe "turn a ship facing North" do
 
     test "90 left, faces West" do
-      ship = Ship.new(:north)
+      ship = %Ship{Ship.new() | orientation: :north}
       turned_ship = Ship.move_by(ship, "L90")
       assert :west == turned_ship.orientation
     end
 
     test "270 left, faces East" do
-      ship = Ship.new(:north)
+      ship = %Ship{Ship.new() | orientation: :north}
       turned_ship = Ship.move_by(ship, "L270")
       assert :east == turned_ship.orientation
     end
 
     test "180 left, faces South" do
-      ship = Ship.new(:north)
+      ship = %Ship{Ship.new() | orientation: :north}
       turned_ship = Ship.move_by(ship, "L180")
       assert :south == turned_ship.orientation
     end
 
     test "90 right, faces East" do
-      ship = Ship.new(:north)
+      ship = %Ship{Ship.new() | orientation: :north}
       turned_ship = Ship.move_by(ship, "R90")
       assert :east == turned_ship.orientation
     end
 
     test "270 right, faces West" do
-      ship = Ship.new(:north)
+      ship = %Ship{Ship.new() | orientation: :north}
       turned_ship = Ship.move_by(ship, "R270")
       assert :west == turned_ship.orientation
     end
