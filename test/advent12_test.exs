@@ -1,6 +1,10 @@
 defmodule Advent12Test do
   use ExUnit.Case
 
+  test "resolve first part" do
+    assert Advent12.resolve_first_part() == 1645
+  end
+
   test "manhattan distance on provided example" do
     commands = """
     F10
