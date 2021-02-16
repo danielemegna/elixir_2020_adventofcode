@@ -19,8 +19,14 @@ defmodule Advent12Test do
     assert %Ship{orientation: :south, position: %{x: 17, y: -8}} == moved_ship
   end
 
+  defp stream_of(content), do: content |> String.split("\n", trim: true) |> Stream.map(&(&1))
+
+end
 
 ######################################################
+
+defmodule ShipTest do
+  use ExUnit.Case
 
   test "new ships start from x: 0 and y: 0" do
     ship = Ship.new()
@@ -143,7 +149,5 @@ defmodule Advent12Test do
       assert Ship.manhattan_distance_from_center(ship) == 28 + 32
     end
   end
-
-  defp stream_of(content), do: content |> String.split("\n", trim: true) |> Stream.map(&(&1))
 
 end
