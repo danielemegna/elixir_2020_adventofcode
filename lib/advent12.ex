@@ -20,9 +20,10 @@ defmodule Ship do
     end
   end
 
-  defp move_forward(%Ship{orientation: :east} = ship, steps), do: move_east(ship, steps)
   defp move_forward(%Ship{orientation: :north} = ship, steps), do: move_north(ship, steps)
   defp move_forward(%Ship{orientation: :south} = ship, steps), do: move_south(ship, steps)
+  defp move_forward(%Ship{orientation: :west} = ship, steps), do: move_west(ship, steps)
+  defp move_forward(%Ship{orientation: :east} = ship, steps), do: move_east(ship, steps)
 
   defp move_north(ship, steps), do: put_in(ship.position.y, ship.position.y + steps)
   defp move_south(ship, steps), do: put_in(ship.position.y, ship.position.y - steps)

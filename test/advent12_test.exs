@@ -54,16 +54,22 @@ defmodule Advent12Test do
       assert %{x: 24, y: 0} == new_ship.position
     end
 
-    test "a ship facing North, moves North" do
+    test "a ship facing North" do
       ship = Ship.new(:north)
       moved_ship = Ship.move_by(ship, "F10")
       assert %Ship{orientation: :north, position: %{x: 0, y: 10}} == moved_ship
     end
 
-    test "a ship facing South, moves South" do
+    test "a ship facing South" do
       ship = Ship.new(:south)
       moved_ship = Ship.move_by(ship, "F16")
       assert %Ship{orientation: :south, position: %{x: 0, y: -16}} == moved_ship
+    end
+
+    test "a ship facing West" do
+      ship = Ship.new(:west)
+      moved_ship = Ship.move_by(ship, "F42")
+      assert %Ship{orientation: :west, position: %{x: -42, y: 0}} == moved_ship
     end
   end
 
