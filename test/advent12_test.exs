@@ -25,6 +25,40 @@ end
 
 ######################################################
 
+defmodule WaypointTest do
+  use ExUnit.Case
+
+  test "new waypoint start from x: 10 and y: 1" do
+    waypoint = Waypoint.new()
+    assert %{x: 10, y: 1} == waypoint.position
+  end
+
+  describe "new waypoint moved by cardinal point command" do
+    test "on North 10, ends in x: 10, y: 11" do
+      waypoint = Waypoint.move_by(Waypoint.new(), "N10")
+      assert %{x: 10, y: 11} == waypoint.position
+    end
+
+    test "on West 15, ends in x: -5, y: 1" do
+      waypoint = Waypoint.move_by(Waypoint.new(), "W15")
+      assert %{x: -5, y: 1} == waypoint.position
+    end
+  end
+  
+  describe "rotate" do
+    test "a new waypoint right 90" do
+      new_ship = Waypoint.move_by(Waypoint.new(), "R90")
+      assert %{x: 1, y: -10} == new_ship.position
+    end
+    test "a new waypoint left 90" do
+      new_ship = Waypoint.move_by(Waypoint.new(), "L90")
+      assert %{x: -1, y: 10} == new_ship.position
+    end
+  end
+end
+
+######################################################
+
 defmodule ShipTest do
   use ExUnit.Case
 

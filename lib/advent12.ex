@@ -47,6 +47,43 @@ end
 
 ######################################################
 
+defmodule Waypoint do
+  @enforce_keys [:position]
+  defstruct @enforce_keys
+
+  def new() do
+    %Waypoint{position: %{x: 10, y: 1}}
+  end
+
+  def move_by(%Waypoint{} = waypoint, instruction) do
+    {command, steps} = String.split_at(instruction, 1)
+    steps = String.to_integer(steps)
+    case command do
+      "N" -> move_north(waypoint, steps)
+      "S" -> move_south(waypoint, steps)
+      "W" -> move_west(waypoint, steps)
+      "E" -> move_east(waypoint, steps)
+      "L" -> rotate_left(waypoint, steps)
+      "R" -> rotate_right(waypoint, steps)
+    end
+  end
+
+  defp move_north(waypoint, steps), do: put_in(waypoint.position.y, waypoint.position.y + steps)
+  defp move_south(waypoint, steps), do: put_in(waypoint.position.y, waypoint.position.y - steps)
+  defp move_west(waypoint, steps), do: put_in(waypoint.position.x, waypoint.position.x - steps)
+  defp move_east(waypoint, steps), do: put_in(waypoint.position.x, waypoint.position.x + steps)
+
+  defp rotate_left(waypoint, _degrees) do
+    put_in(waypoint.position, %{x: -waypoint.position.y, y: waypoint.position.x})
+  end
+
+  defp rotate_right(waypoint, _degrees) do
+    put_in(waypoint.position, %{x: waypoint.position.y, y: -waypoint.position.x})
+  end
+end
+
+######################################################
+
 defmodule Advent12 do
 
   def resolve_first_part() do
