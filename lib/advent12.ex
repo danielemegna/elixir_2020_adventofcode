@@ -16,6 +16,7 @@ defmodule Ship do
       "E" -> move_east(ship, steps)
       "F" -> move_forward(ship, steps)
       "L" -> rotate_left(ship, steps)
+      "R" -> rotate_right(ship, steps)
     end
   end
 
@@ -28,13 +29,14 @@ defmodule Ship do
   defp move_west(ship, steps), do: put_in(ship.position.x, ship.position.x - steps)
   defp move_east(ship, steps), do: put_in(ship.position.x, ship.position.x + steps)
 
-  defp rotate_left(ship, degrees) do
-    directions = [:north, :west, :south, :east]
+  defp rotate_left(ship, degrees), do: rotate(ship, degrees, [:north, :west, :south, :east])
+  defp rotate_right(ship, degrees), do: rotate(ship, degrees, [:north, :east, :south, :west])
+
+  defp rotate(ship, degrees, cardinalities_rotation_order) do
     steps = trunc(degrees / 90)
-    current_direction_index = Enum.find_index(directions, &(&1 == ship.direction))
-
-    new_direction = Enum.at(directions, Integer.mod(current_direction_index + steps, 4))
-
+    current_direction_index = cardinalities_rotation_order |> Enum.find_index(&(&1 == ship.direction))
+    new_direction_index = Integer.mod(current_direction_index + steps, 4)
+    new_direction = Enum.at(cardinalities_rotation_order, new_direction_index)
     put_in(ship.direction, new_direction)
   end
 end

@@ -62,6 +62,11 @@ defmodule Advent12Test do
       turned_ship = Ship.move_by(Ship.new(), "L180")
       assert :west == turned_ship.direction
     end
+
+    test "270 right, faces West" do
+      turned_ship = Ship.move_by(Ship.new(), "R270")
+      assert :north == turned_ship.direction
+    end
   end
 
   describe "turn a ship facing North" do
@@ -82,6 +87,18 @@ defmodule Advent12Test do
       ship = Ship.new(:north)
       turned_ship = Ship.move_by(ship, "L180")
       assert :south == turned_ship.direction
+    end
+
+    test "90 right, faces East" do
+      ship = Ship.new(:north)
+      turned_ship = Ship.move_by(ship, "R90")
+      assert :east == turned_ship.direction
+    end
+
+    test "270 right, faces West" do
+      ship = Ship.new(:north)
+      turned_ship = Ship.move_by(ship, "R270")
+      assert :west == turned_ship.direction
     end
   end
 
