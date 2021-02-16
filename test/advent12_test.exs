@@ -5,7 +5,7 @@ defmodule Advent12Test do
     assert Advent12.resolve_first_part() == 1645
   end
 
-  test "manhattan distance on provided example" do
+  test "apply provided example commands on a new ship" do
     commands = """
     F10
     N3
@@ -14,7 +14,9 @@ defmodule Advent12Test do
     F11
     """
 
-    assert Advent12.get_manhattan_distance_with(stream_of(commands)) == 25
+    moved_ship = Advent12.apply_on_new_ship(stream_of(commands))
+
+    assert %Ship{orientation: :south, position: %{x: 17, y: -8}} == moved_ship
   end
 
 
@@ -124,6 +126,21 @@ defmodule Advent12Test do
       ship = Ship.new(:north)
       turned_ship = Ship.move_by(ship, "R270")
       assert :west == turned_ship.orientation
+    end
+  end
+
+  describe "manhattan distance from center" do
+    test "of a new ship" do
+      assert Ship.manhattan_distance_from_center(Ship.new()) == 0
+    end
+
+    test "of a moved ship" do
+      ship = %Ship{orientation: :north, position: %{x: 22, y: -16}}
+      assert Ship.manhattan_distance_from_center(ship) == 22 + 16
+      ship = %Ship{orientation: :east, position: %{x: -31, y: 50}}
+      assert Ship.manhattan_distance_from_center(ship) == 31 + 50
+      ship = %Ship{orientation: :south, position: %{x: -28, y: -32}}
+      assert Ship.manhattan_distance_from_center(ship) == 28 + 32
     end
   end
 

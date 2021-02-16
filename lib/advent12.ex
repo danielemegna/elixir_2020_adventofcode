@@ -6,7 +6,7 @@ defmodule Ship do
     %Ship{orientation: orientation, position: %{x: 0, y: 0}}
   end
 
-  def move_by(ship, instruction) do
+  def move_by(%Ship{} = ship, instruction) do
     {command, steps} = String.split_at(instruction, 1)
     steps = String.to_integer(steps)
     case command do
@@ -19,6 +19,9 @@ defmodule Ship do
       "R" -> rotate_right(ship, steps)
     end
   end
+
+  def manhattan_distance_from_center(%Ship{} = ship), do:
+    abs(ship.position.x) + abs(ship.position.y)
 
   defp move_forward(%Ship{orientation: :north} = ship, steps), do: move_north(ship, steps)
   defp move_forward(%Ship{orientation: :south} = ship, steps), do: move_south(ship, steps)
@@ -47,18 +50,16 @@ end
 defmodule Advent12 do
 
   def resolve_first_part() do
-    get_manhattan_distance_with(
-      read_ship_commands_stream()
-    )
+    read_ship_commands_stream()
+    |> apply_on_new_ship()
+    |> Ship.manhattan_distance_from_center()
   end
 
-  def get_manhattan_distance_with(commands_stream) do
-    ship = commands_stream
+  def apply_on_new_ship(commands_stream) do
+    commands_stream
     |> Enum.reduce(Ship.new(), fn command, ship ->
       Ship.move_by(ship, command)
     end)
-
-    abs(ship.position.x) + abs(ship.position.y)
   end
 
   defp read_ship_commands_stream() do
