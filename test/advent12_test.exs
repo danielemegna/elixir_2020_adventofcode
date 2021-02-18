@@ -99,30 +99,30 @@ defmodule ShipTest do
 
   describe "new ship moved by cardinal point command" do
     test "on North 10, ends in x: 0, y: 10" do
-      new_ship = Ship.move_by(Ship.new(), "N10")
-      assert %{x: 0, y: 10} == new_ship.position
+      moved_ship = Ship.move_by(Ship.new(), "N10")
+      assert %{x: 0, y: 10} == moved_ship.position
     end
 
     test "on West 15, ends in x: -15, y: 0" do
-      new_ship = Ship.move_by(Ship.new(), "W15")
-      assert %{x: -15, y: 0} == new_ship.position
+      moved_ship = Ship.move_by(Ship.new(), "W15")
+      assert %{x: -15, y: 0} == moved_ship.position
     end
 
     test "on East 2, ends in x: 2, y: 0" do
-      new_ship = Ship.move_by(Ship.new(), "E2")
-      assert %{x: 2, y: 0} == new_ship.position
+      moved_ship = Ship.move_by(Ship.new(), "E2")
+      assert %{x: 2, y: 0} == moved_ship.position
     end
     
     test "on South 17, ends in x: 0, y: -17" do
-      new_ship = Ship.move_by(Ship.new(), "S17")
-      assert %{x: 0, y: -17} == new_ship.position
+      moved_ship = Ship.move_by(Ship.new(), "S17")
+      assert %{x: 0, y: -17} == moved_ship.position
     end
   end
 
   describe "moving forward" do
     test "a new ship, moves East" do
-      new_ship = Ship.move_by(Ship.new(), "F24")
-      assert %{x: 24, y: 0} == new_ship.position
+      moved_ship = Ship.move_by(Ship.new(), "F24")
+      assert %{x: 24, y: 0} == moved_ship.position
     end
 
     test "a ship facing North" do
