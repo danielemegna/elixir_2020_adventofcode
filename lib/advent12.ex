@@ -1,3 +1,45 @@
+defmodule Waypoint do
+  @enforce_keys [:position]
+  defstruct @enforce_keys
+
+  def new() do
+    %Waypoint{position: %{x: 10, y: 1}}
+  end
+
+  def move_by(%Waypoint{} = waypoint, instruction) do
+    {command, steps} = String.split_at(instruction, 1)
+    steps = String.to_integer(steps)
+    case command do
+      "N" -> move_north(waypoint, steps)
+      "S" -> move_south(waypoint, steps)
+      "W" -> move_west(waypoint, steps)
+      "E" -> move_east(waypoint, steps)
+      "L" -> rotate_left(waypoint, steps)
+      "R" -> rotate_right(waypoint, steps)
+      "F" -> raise ArgumentError, message: "Waypoint do not support forward instructions"
+    end
+  end
+
+  defp move_north(waypoint, steps), do: put_in(waypoint.position.y, waypoint.position.y + steps)
+  defp move_south(waypoint, steps), do: put_in(waypoint.position.y, waypoint.position.y - steps)
+  defp move_west(waypoint, steps), do: put_in(waypoint.position.x, waypoint.position.x - steps)
+  defp move_east(waypoint, steps), do: put_in(waypoint.position.x, waypoint.position.x + steps)
+
+  defp rotate_left(waypoint, 0), do: waypoint
+  defp rotate_left(waypoint, degrees) do
+    rotated_left_by_90 = %Waypoint{waypoint | position: %{x: -waypoint.position.y, y: waypoint.position.x}}
+    rotate_left(rotated_left_by_90, degrees-90)
+  end
+
+  defp rotate_right(waypoint, 0), do: waypoint
+  defp rotate_right(waypoint, degrees) do
+    rotated_right_by_90 = %Waypoint{waypoint | position: %{ x: waypoint.position.y, y: -waypoint.position.x}}
+    rotate_right(rotated_right_by_90, degrees-90)
+  end
+end
+
+######################################################
+
 defmodule Ship do
   @enforce_keys [:orientation, :position]
   defstruct @enforce_keys
@@ -42,48 +84,6 @@ defmodule Ship do
     new_orientation_index = Integer.mod(current_orientation_index + steps, 4)
     new_orientation = Enum.at(orientation_rotation_order, new_orientation_index)
     put_in(ship.orientation, new_orientation)
-  end
-end
-
-######################################################
-
-defmodule Waypoint do
-  @enforce_keys [:position]
-  defstruct @enforce_keys
-
-  def new() do
-    %Waypoint{position: %{x: 10, y: 1}}
-  end
-
-  def move_by(%Waypoint{} = waypoint, instruction) do
-    {command, steps} = String.split_at(instruction, 1)
-    steps = String.to_integer(steps)
-    case command do
-      "N" -> move_north(waypoint, steps)
-      "S" -> move_south(waypoint, steps)
-      "W" -> move_west(waypoint, steps)
-      "E" -> move_east(waypoint, steps)
-      "L" -> rotate_left(waypoint, steps)
-      "R" -> rotate_right(waypoint, steps)
-      "F" -> raise ArgumentError, message: "Waypoint do not support forward instructions"
-    end
-  end
-
-  defp move_north(waypoint, steps), do: put_in(waypoint.position.y, waypoint.position.y + steps)
-  defp move_south(waypoint, steps), do: put_in(waypoint.position.y, waypoint.position.y - steps)
-  defp move_west(waypoint, steps), do: put_in(waypoint.position.x, waypoint.position.x - steps)
-  defp move_east(waypoint, steps), do: put_in(waypoint.position.x, waypoint.position.x + steps)
-
-  defp rotate_left(waypoint, 0), do: waypoint
-  defp rotate_left(waypoint, degrees) do
-    rotated_left_by_90 = %Waypoint{waypoint | position: %{x: -waypoint.position.y, y: waypoint.position.x}}
-    rotate_left(rotated_left_by_90, degrees-90)
-  end
-
-  defp rotate_right(waypoint, 0), do: waypoint
-  defp rotate_right(waypoint, degrees) do
-    rotated_right_by_90 = %Waypoint{waypoint | position: %{ x: waypoint.position.y, y: -waypoint.position.x}}
-    rotate_right(rotated_right_by_90, degrees-90)
   end
 end
 
