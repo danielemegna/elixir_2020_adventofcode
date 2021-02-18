@@ -65,6 +65,7 @@ defmodule Waypoint do
       "E" -> move_east(waypoint, steps)
       "L" -> rotate_left(waypoint, steps)
       "R" -> rotate_right(waypoint, steps)
+      "F" -> raise ArgumentError, message: "Waypoint do not support forward instructions"
     end
   end
 

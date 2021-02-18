@@ -74,6 +74,12 @@ defmodule WaypointTest do
       assert %{x: -1, y: 10} == actual.position
     end
   end
+
+  test "waypoint do not support forward" do
+    assert_raise ArgumentError, "Waypoint do not support forward instructions", fn ->
+      Waypoint.move_by(Waypoint.new(), "F10")
+    end
+  end
 end
 
 ######################################################
