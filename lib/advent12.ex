@@ -73,12 +73,16 @@ defmodule Waypoint do
   defp move_west(waypoint, steps), do: put_in(waypoint.position.x, waypoint.position.x - steps)
   defp move_east(waypoint, steps), do: put_in(waypoint.position.x, waypoint.position.x + steps)
 
-  defp rotate_left(waypoint, _degrees) do
-    put_in(waypoint.position, %{x: -waypoint.position.y, y: waypoint.position.x})
+  defp rotate_left(waypoint, 0), do: waypoint
+  defp rotate_left(waypoint, degrees) do
+    rotated_left_by_90 = %Waypoint{waypoint | position: %{x: -waypoint.position.y, y: waypoint.position.x}}
+    rotate_left(rotated_left_by_90, degrees-90)
   end
 
-  defp rotate_right(waypoint, _degrees) do
-    put_in(waypoint.position, %{x: waypoint.position.y, y: -waypoint.position.x})
+  defp rotate_right(waypoint, 0), do: waypoint
+  defp rotate_right(waypoint, degrees) do
+    rotated_right_by_90 = %Waypoint{waypoint | position: %{ x: waypoint.position.y, y: -waypoint.position.x}}
+    rotate_right(rotated_right_by_90, degrees-90)
   end
 end
 

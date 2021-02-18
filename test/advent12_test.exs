@@ -45,14 +45,33 @@ defmodule WaypointTest do
     end
   end
   
-  describe "rotate" do
-    test "a new waypoint right 90" do
-      new_ship = Waypoint.move_by(Waypoint.new(), "R90")
-      assert %{x: 1, y: -10} == new_ship.position
+  describe "rotate a new waypoint" do
+    test "right 90" do
+      actual = Waypoint.move_by(Waypoint.new(), "R90")
+      assert %{x: 1, y: -10} == actual.position
     end
-    test "a new waypoint left 90" do
-      new_ship = Waypoint.move_by(Waypoint.new(), "L90")
-      assert %{x: -1, y: 10} == new_ship.position
+
+    test "left 90" do
+      actual = Waypoint.move_by(Waypoint.new(), "L90")
+      assert %{x: -1, y: 10} == actual.position
+    end
+
+    test "left 90 twice" do
+      actual = Waypoint.new()
+      |> Waypoint.move_by("L90")
+      |> Waypoint.move_by("L90")
+      assert %{x: -10, y: -1} == actual.position
+    end
+
+    test "right and left 180" do
+      expected = %{x: -10, y: -1}
+      assert Waypoint.move_by(Waypoint.new(), "R180").position == expected
+      assert Waypoint.move_by(Waypoint.new(), "L180").position == expected
+    end
+
+    test "right 270" do
+      actual = Waypoint.move_by(Waypoint.new(), "R270")
+      assert %{x: -1, y: 10} == actual.position
     end
   end
 end
