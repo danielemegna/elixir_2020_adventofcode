@@ -144,6 +144,40 @@ defmodule ShipTest do
     end
   end
 
+  describe "moving forward relating a waypoint" do
+    test "one step with waypoint in x: 10, y: 0" do
+      ship = Ship.new()
+      waypoint = %Waypoint{Waypoint.new() | position: %{x: 10, y: 0}}
+
+      moved_ship = Ship.move_by(ship, "F1", waypoint)
+      assert %{x: 10, y: 0} == moved_ship.position
+    end
+
+    test "three steps with waypoint in x: 10, y: 0" do
+      ship = Ship.new()
+      waypoint = %Waypoint{Waypoint.new() | position: %{x: 10, y: 0}}
+
+      moved_ship = Ship.move_by(ship, "F3", waypoint)
+      assert %{x: 30, y: 0} == moved_ship.position
+    end
+
+    test "two steps with waypoint in x: 5, y: -7" do
+      ship = Ship.new()
+      waypoint = %Waypoint{Waypoint.new() | position: %{x: 5, y: -7}}
+
+      moved_ship = Ship.move_by(ship, "F2", waypoint)
+      assert %{x: 10, y: -14} == moved_ship.position
+    end
+
+    test "preserve actual ship position" do
+      ship = %Ship{Ship.new() | position: %{x: 100, y: -100}}
+      waypoint = %Waypoint{Waypoint.new() | position: %{x: -5, y: 7}}
+
+      moved_ship = Ship.move_by(ship, "F3", waypoint)
+      assert %{x: 100-15, y: -100+21} == moved_ship.position
+    end
+  end
+
   describe "turn a new ship" do
     test "90 left, faces North" do
       turned_ship = Ship.move_by(Ship.new(), "L90")

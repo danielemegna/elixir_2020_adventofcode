@@ -62,6 +62,15 @@ defmodule Ship do
     end
   end
 
+  def move_by(%Ship{} = ship, instruction, %Waypoint{} = waypoint) do
+    {_command, steps} = String.split_at(instruction, 1)
+    steps = String.to_integer(steps)
+    %Ship{ship | position: %{
+      x: ship.position.x + (waypoint.position.x * steps),
+      y: ship.position.y + (waypoint.position.y * steps)
+    }}
+  end
+
   def manhattan_distance_from_center(%Ship{} = ship), do:
     abs(ship.position.x) + abs(ship.position.y)
 
