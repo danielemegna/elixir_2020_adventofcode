@@ -84,15 +84,28 @@ defmodule Ship do
   defp move_west(ship, steps), do: put_in(ship.position.x, ship.position.x - steps)
   defp move_east(ship, steps), do: put_in(ship.position.x, ship.position.x + steps)
 
-  defp rotate_left(ship, degrees), do: rotate(ship, degrees, [:north, :west, :south, :east])
-  defp rotate_right(ship, degrees), do: rotate(ship, degrees, [:north, :east, :south, :west])
+  defp rotate_left(ship, 0), do: ship
+  defp rotate_left(ship, degrees) do
+    new_orientation = case ship.orientation do
+      :north -> :west 
+      :west -> :south
+      :south -> :east
+      :east -> :north
+    end
+    rotated_left_by_90 = put_in(ship.orientation, new_orientation)
+    rotate_left(rotated_left_by_90, degrees-90)
+  end
 
-  defp rotate(ship, degrees, orientation_rotation_order) do
-    steps = trunc(degrees / 90)
-    current_orientation_index = orientation_rotation_order |> Enum.find_index(&(&1 == ship.orientation))
-    new_orientation_index = Integer.mod(current_orientation_index + steps, 4)
-    new_orientation = Enum.at(orientation_rotation_order, new_orientation_index)
-    put_in(ship.orientation, new_orientation)
+  defp rotate_right(ship, 0), do: ship
+  defp rotate_right(ship, degrees) do
+    new_orientation = case ship.orientation do
+      :north -> :east 
+      :east -> :south
+      :south -> :west
+      :west -> :north
+    end
+    rotated_right_by_90 = put_in(ship.orientation, new_orientation)
+    rotate_right(rotated_right_by_90, degrees-90)
   end
 end
 
