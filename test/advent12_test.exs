@@ -9,8 +9,8 @@ defmodule Advent12Test do
     assert Advent12.resolve_second_part() == 35292
   end
 
-  test "apply provided example commands on a new ship" do
-    commands = """
+  test "apply provided example navigation instructions on a new ship" do
+    navigation_instructions = """
     F10
     N3
     F7
@@ -18,13 +18,13 @@ defmodule Advent12Test do
     F11
     """
 
-    moved_ship = Advent12.apply_on_new_ship(stream_of(commands))
+    moved_ship = Advent12.apply_on_new_ship(stream_of(navigation_instructions))
 
     assert %Ship{orientation: :south, position: %{x: 17, y: -8}} == moved_ship
   end
 
-  test "apply provided example commands on a new ship with waypoint" do
-    commands = """
+  test "apply provided example navigation instructions on a new ship with waypoint" do
+    navigation_instructions = """
     F10
     N3
     F7
@@ -32,7 +32,7 @@ defmodule Advent12Test do
     F11
     """
 
-    moved_ship = Advent12.apply_on_new_ship_with_waypoint(stream_of(commands))
+    moved_ship = Advent12.apply_on_new_ship_with_waypoint(stream_of(navigation_instructions))
 
     assert %{x: 214, y: -72} == moved_ship.position
   end
@@ -51,7 +51,7 @@ defmodule WaypointTest do
     assert %{x: 10, y: 1} == waypoint.position
   end
 
-  describe "new waypoint moved by cardinal point command" do
+  describe "new waypoint moved by cardinal point instruction" do
     test "on North 10, ends in x: 10, y: 11" do
       waypoint = Waypoint.move_by(Waypoint.new(), "N10")
       assert %{x: 10, y: 11} == waypoint.position
@@ -94,7 +94,7 @@ defmodule WaypointTest do
   end
 
   test "waypoint do not support forward" do
-    assert_raise ArgumentError, "Waypoint do not support forward instructions", fn ->
+    assert_raise ArgumentError, "Waypoint do not support forward instruction", fn ->
       Waypoint.move_by(Waypoint.new(), "F10")
     end
   end
@@ -115,7 +115,7 @@ defmodule ShipTest do
     assert :east == ship.orientation
   end
 
-  describe "new ship moved by cardinal point command" do
+  describe "new ship moved by cardinal point instruction" do
     test "on North 10, ends in x: 0, y: 10" do
       moved_ship = Ship.move_by(Ship.new(), "N10")
       assert %{x: 0, y: 10} == moved_ship.position

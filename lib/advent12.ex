@@ -6,17 +6,17 @@ defmodule Waypoint do
     %Waypoint{position: %{x: 10, y: 1}}
   end
 
-  def move_by(%Waypoint{} = waypoint, instruction) do
-    {command, steps} = String.split_at(instruction, 1)
+  def move_by(%Waypoint{} = waypoint, instruction_string) do
+    {instruction, steps} = String.split_at(instruction_string, 1)
     steps = String.to_integer(steps)
-    case command do
+    case instruction do
       "N" -> move_north(waypoint, steps)
       "S" -> move_south(waypoint, steps)
       "W" -> move_west(waypoint, steps)
       "E" -> move_east(waypoint, steps)
       "L" -> rotate_left(waypoint, steps)
       "R" -> rotate_right(waypoint, steps)
-      "F" -> raise ArgumentError, message: "Waypoint do not support forward instructions"
+      "F" -> raise ArgumentError, message: "Waypoint do not support forward instruction"
     end
   end
 
@@ -48,10 +48,10 @@ defmodule Ship do
     %Ship{orientation: :east, position: %{x: 0, y: 0}}
   end
 
-  def move_by(%Ship{} = ship, instruction) do
-    {command, steps} = String.split_at(instruction, 1)
+  def move_by(%Ship{} = ship, instruction_string) do
+    {instruction, steps} = String.split_at(instruction_string, 1)
     steps = String.to_integer(steps)
-    case command do
+    case instruction do
       "N" -> move_north(ship, steps)
       "S" -> move_south(ship, steps)
       "W" -> move_west(ship, steps)
@@ -62,8 +62,8 @@ defmodule Ship do
     end
   end
 
-  def move_by(%Ship{} = ship, instruction, %Waypoint{} = waypoint) do
-    {_command, steps} = String.split_at(instruction, 1)
+  def move_by(%Ship{} = ship, instruction_string, %Waypoint{} = waypoint) do
+    {_instruction, steps} = String.split_at(instruction_string, 1)
     steps = String.to_integer(steps)
     %Ship{ship | position: %{
       x: ship.position.x + (waypoint.position.x * steps),
@@ -114,36 +114,36 @@ end
 defmodule Advent12 do
 
   def resolve_first_part() do
-    read_ship_commands_stream()
+    read_navigation_instructions_stream()
     |> apply_on_new_ship()
     |> Ship.manhattan_distance_from_center()
   end
 
   def resolve_second_part() do
-    read_ship_commands_stream()
+    read_navigation_instructions_stream()
     |> apply_on_new_ship_with_waypoint()
     |> Ship.manhattan_distance_from_center()
   end
 
-  def apply_on_new_ship(commands_stream) do
-    commands_stream
-    |> Enum.reduce(Ship.new(), fn command, ship ->
-      Ship.move_by(ship, command)
+  def apply_on_new_ship(instructions_stream) do
+    instructions_stream
+    |> Enum.reduce(Ship.new(), fn instruction, ship ->
+      Ship.move_by(ship, instruction)
     end)
   end
 
-  def apply_on_new_ship_with_waypoint(commands_stream) do
-    commands_stream
-    |> Enum.reduce({Ship.new(), Waypoint.new()}, fn command, {ship, waypoint} ->
-      case String.at(command, 0) do
-        "F" -> {Ship.move_by(ship, command, waypoint), waypoint}
-        _ -> {ship, Waypoint.move_by(waypoint, command)}
+  def apply_on_new_ship_with_waypoint(instructions_stream) do
+    instructions_stream
+    |> Enum.reduce({Ship.new(), Waypoint.new()}, fn instruction, {ship, waypoint} ->
+      case String.at(instruction, 0) do
+        "F" -> {Ship.move_by(ship, instruction, waypoint), waypoint}
+        _ -> {ship, Waypoint.move_by(waypoint, instruction)}
       end
     end)
     |> elem(0)
   end
 
-  defp read_ship_commands_stream() do
+  defp read_navigation_instructions_stream() do
     File.stream!("advent12.txt")
     |> Stream.map(&String.trim/1)
   end
