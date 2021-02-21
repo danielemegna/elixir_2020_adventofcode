@@ -93,10 +93,9 @@ defmodule WaypointTest do
     end
   end
 
-  test "waypoint do not support forward" do
-    assert_raise ArgumentError, "Waypoint do not support forward instruction", fn ->
-      Waypoint.move_by(Waypoint.new(), "F10")
-    end
+  test "waypoint should ignore forward navigation instructions" do
+    actual = Waypoint.move_by(Waypoint.new(), "F10")
+    assert Waypoint.new() == actual
   end
 end
 
@@ -135,6 +134,13 @@ defmodule ShipTest do
       moved_ship = Ship.move_by(Ship.new(), "S17")
       assert %{x: 0, y: -17} == moved_ship.position
     end
+
+    test "are ignored providing a waypoint" do
+      moved_ship = Ship.move_by(Ship.new(), "N10", Waypoint.new())
+      assert Ship.new() == moved_ship
+      moved_ship = Ship.move_by(Ship.new(), "W15", Waypoint.new())
+      assert Ship.new() == moved_ship
+    end
   end
 
   describe "moving forward" do
@@ -162,7 +168,7 @@ defmodule ShipTest do
     end
   end
 
-  describe "moving forward relating a waypoint" do
+  describe "moving forward providing a waypoint" do
     test "one step with waypoint in x: 10, y: 0" do
       ship = Ship.new()
       waypoint = %Waypoint{Waypoint.new() | position: %{x: 10, y: 0}}
@@ -211,10 +217,16 @@ defmodule ShipTest do
       turned_ship = Ship.move_by(Ship.new(), "R270")
       assert :north == turned_ship.orientation
     end
+
+    test "is ignored providing a waypoint" do
+      turned_ship = Ship.move_by(Ship.new(), "R90", Waypoint.new())
+      assert Ship.new() == turned_ship
+      turned_ship = Ship.move_by(Ship.new(), "L270", Waypoint.new())
+      assert Ship.new() == turned_ship
+    end
   end
 
   describe "turn a ship facing North" do
-
     test "90 left, faces West" do
       ship = %Ship{Ship.new() | orientation: :north}
       turned_ship = Ship.move_by(ship, "L90")

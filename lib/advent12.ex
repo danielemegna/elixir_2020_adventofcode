@@ -30,17 +30,18 @@ defmodule Waypoint do
     %Waypoint{position: %{x: 10, y: 1}}
   end
 
-  def move_by(%Waypoint{} = waypoint, instruction_string) do
-    {instruction, steps} = String.split_at(instruction_string, 1)
-    steps = String.to_integer(steps)
-    case instruction do
-      "N" -> move_north(waypoint, steps)
-      "S" -> move_south(waypoint, steps)
-      "W" -> move_west(waypoint, steps)
-      "E" -> move_east(waypoint, steps)
-      "L" -> rotate_left(waypoint, steps)
-      "R" -> rotate_right(waypoint, steps)
-      "F" -> raise ArgumentError, message: "Waypoint do not support forward instruction"
+  def move_by(%Waypoint{} = waypoint, instruction_string) when is_binary(instruction_string), do:
+    move_by(waypoint, NavigationInstruction.parse(instruction_string))
+
+  def move_by(%Waypoint{} = waypoint, %NavigationInstruction{} = instruction) do
+    case instruction.operation do
+      :move_north -> move_north(waypoint, instruction.quantity)
+      :move_south -> move_south(waypoint, instruction.quantity)
+      :move_west -> move_west(waypoint, instruction.quantity)
+      :move_east -> move_east(waypoint, instruction.quantity)
+      :rotate_left -> rotate_left(waypoint, instruction.quantity)
+      :rotate_right -> rotate_right(waypoint, instruction.quantity)
+      :move_forward -> waypoint # waypoint position is always related to the ship
     end
   end
 
@@ -102,8 +103,8 @@ defmodule Ship do
     }}
   end
 
-  def move_by( %Ship{}, %NavigationInstruction{}, %Waypoint{}), do:
-    raise ArgumentError, message: "Only move_forward operation supported with waypoint"
+  # other navigation instructions using waypoint should be ignored
+  def move_by(%Ship{} = ship, %NavigationInstruction{}, %Waypoint{}), do: ship
 
   defp move_north(ship, steps), do: put_in(ship.position.y, ship.position.y + steps)
   defp move_south(ship, steps), do: put_in(ship.position.y, ship.position.y - steps)
@@ -170,11 +171,12 @@ defmodule Advent12 do
 
   def apply_on_new_ship_with_waypoint(instructions_stream) do
     instructions_stream
+    |> Stream.map(&NavigationInstruction.parse/1)
     |> Enum.reduce({Ship.new(), Waypoint.new()}, fn instruction, {ship, waypoint} ->
-      case String.at(instruction, 0) do
-        "F" -> {Ship.move_by(ship, instruction, waypoint), waypoint}
-        _ -> {ship, Waypoint.move_by(waypoint, instruction)}
-      end
+      {
+        Ship.move_by(ship, instruction, waypoint),
+        Waypoint.move_by(waypoint, instruction)
+      }
     end)
     |> elem(0)
   end
