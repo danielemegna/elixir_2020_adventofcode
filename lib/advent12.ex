@@ -106,11 +106,28 @@ defmodule Advent12 do
     |> Ship.manhattan_distance_from_center()
   end
 
+  def resolve_second_part() do
+    read_ship_commands_stream()
+    |> apply_on_new_ship_with_waypoint()
+    |> Ship.manhattan_distance_from_center()
+  end
+
   def apply_on_new_ship(commands_stream) do
     commands_stream
     |> Enum.reduce(Ship.new(), fn command, ship ->
       Ship.move_by(ship, command)
     end)
+  end
+
+  def apply_on_new_ship_with_waypoint(commands_stream) do
+    commands_stream
+    |> Enum.reduce({Ship.new(), Waypoint.new()}, fn command, {ship, waypoint} ->
+      case String.at(command, 0) do
+        "F" -> {Ship.move_by(ship, command, waypoint), waypoint}
+        _ -> {ship, Waypoint.move_by(waypoint, command)}
+      end
+    end)
+    |> elem(0)
   end
 
   defp read_ship_commands_stream() do

@@ -5,6 +5,10 @@ defmodule Advent12Test do
     assert Advent12.resolve_first_part() == 1645
   end
 
+  test "resolve second part" do
+    assert Advent12.resolve_second_part() == 35292
+  end
+
   test "apply provided example commands on a new ship" do
     commands = """
     F10
@@ -17,6 +21,20 @@ defmodule Advent12Test do
     moved_ship = Advent12.apply_on_new_ship(stream_of(commands))
 
     assert %Ship{orientation: :south, position: %{x: 17, y: -8}} == moved_ship
+  end
+
+  test "apply provided example commands on a new ship with waypoint" do
+    commands = """
+    F10
+    N3
+    F7
+    R90
+    F11
+    """
+
+    moved_ship = Advent12.apply_on_new_ship_with_waypoint(stream_of(commands))
+
+    assert %{x: 214, y: -72} == moved_ship.position
   end
 
   defp stream_of(content), do: content |> String.split("\n", trim: true) |> Stream.map(&(&1))
