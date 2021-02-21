@@ -1,3 +1,27 @@
+defmodule NavigationInstruction do
+  @enforce_keys [:operation, :quantity]
+  defstruct @enforce_keys
+
+  def parse(instruction_string) do
+    {operation_string, quantity_string} = String.split_at(instruction_string, 1)
+
+    operation = case operation_string do
+      "N" -> :move_north
+      "S" -> :move_south
+      "W" -> :move_west
+      "E" -> :move_east
+      "F" -> :move_forward
+      "L" -> :rotate_left
+      "R" -> :rotate_right
+    end
+    quantity = String.to_integer(quantity_string)
+
+    %NavigationInstruction{operation: operation, quantity: quantity}
+  end
+end
+
+######################################################
+
 defmodule Waypoint do
   @enforce_keys [:position]
   defstruct @enforce_keys
@@ -44,45 +68,56 @@ defmodule Ship do
   @enforce_keys [:orientation, :position]
   defstruct @enforce_keys
 
-  def new() do
-    %Ship{orientation: :east, position: %{x: 0, y: 0}}
-  end
+  def new(), do: %Ship{orientation: :east, position: %{x: 0, y: 0}}
 
-  def move_by(%Ship{} = ship, instruction_string) do
-    {instruction, steps} = String.split_at(instruction_string, 1)
-    steps = String.to_integer(steps)
-    case instruction do
-      "N" -> move_north(ship, steps)
-      "S" -> move_south(ship, steps)
-      "W" -> move_west(ship, steps)
-      "E" -> move_east(ship, steps)
-      "F" -> move_forward(ship, steps)
-      "L" -> rotate_left(ship, steps)
-      "R" -> rotate_right(ship, steps)
+  def manhattan_distance_from_center(%Ship{} = ship), do:
+    abs(ship.position.x) + abs(ship.position.y)
+
+  def move_by(%Ship{} = ship, instruction_string) when is_binary(instruction_string), do:
+    move_by(ship, NavigationInstruction.parse(instruction_string))
+
+  def move_by(%Ship{} = ship, %NavigationInstruction{} = instruction) do
+    case instruction.operation do
+      :move_north -> move_north(ship, instruction.quantity)
+      :move_south -> move_south(ship, instruction.quantity)
+      :move_west -> move_west(ship, instruction.quantity)
+      :move_east -> move_east(ship, instruction.quantity)
+      :move_forward -> move_forward(ship, instruction.quantity)
+      :rotate_left -> rotate_left(ship, instruction.quantity)
+      :rotate_right -> rotate_right(ship, instruction.quantity)
     end
   end
 
-  def move_by(%Ship{} = ship, instruction_string, %Waypoint{} = waypoint) do
-    {_instruction, steps} = String.split_at(instruction_string, 1)
-    steps = String.to_integer(steps)
+  def move_by(%Ship{} = ship, instruction_string, %Waypoint{} = waypoint) when is_binary(instruction_string), do:
+    move_by(ship, NavigationInstruction.parse(instruction_string), waypoint)
+
+  def move_by(
+    %Ship{} = ship,
+    %NavigationInstruction{operation: :move_forward, quantity: steps},
+    %Waypoint{} = waypoint
+  ) do
     %Ship{ship | position: %{
       x: ship.position.x + (waypoint.position.x * steps),
       y: ship.position.y + (waypoint.position.y * steps)
     }}
   end
 
-  def manhattan_distance_from_center(%Ship{} = ship), do:
-    abs(ship.position.x) + abs(ship.position.y)
-
-  defp move_forward(%Ship{orientation: :north} = ship, steps), do: move_north(ship, steps)
-  defp move_forward(%Ship{orientation: :south} = ship, steps), do: move_south(ship, steps)
-  defp move_forward(%Ship{orientation: :west} = ship, steps), do: move_west(ship, steps)
-  defp move_forward(%Ship{orientation: :east} = ship, steps), do: move_east(ship, steps)
+  def move_by( %Ship{}, %NavigationInstruction{}, %Waypoint{}), do:
+    raise ArgumentError, message: "Only move_forward operation supported with waypoint"
 
   defp move_north(ship, steps), do: put_in(ship.position.y, ship.position.y + steps)
   defp move_south(ship, steps), do: put_in(ship.position.y, ship.position.y - steps)
   defp move_west(ship, steps), do: put_in(ship.position.x, ship.position.x - steps)
   defp move_east(ship, steps), do: put_in(ship.position.x, ship.position.x + steps)
+
+  defp move_forward(ship, steps) do
+    case ship.orientation do
+      :north -> move_north(ship, steps)
+      :south -> move_south(ship, steps)
+      :west -> move_west(ship, steps)
+      :east -> move_east(ship, steps)
+    end
+  end
 
   defp rotate_left(ship, 0), do: ship
   defp rotate_left(ship, degrees) do
@@ -127,6 +162,7 @@ defmodule Advent12 do
 
   def apply_on_new_ship(instructions_stream) do
     instructions_stream
+    |> Stream.map(&NavigationInstruction.parse/1)
     |> Enum.reduce(Ship.new(), fn instruction, ship ->
       Ship.move_by(ship, instruction)
     end)
