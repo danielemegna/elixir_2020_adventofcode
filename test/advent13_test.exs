@@ -1,8 +1,14 @@
 defmodule Advent13Test do
   use ExUnit.Case
 
-  test "given an arrival time and a schedule then you will get the closest time of departure" do
-    assert Advent13.closest_time_of_departure(939, 59) == 944
+  test "get earliest bus i can take from arrival time and bus timetable" do
+    arrival_time = 939
+    bus_timetable = [7,13,:out_of_service,:out_of_service,59,:out_of_service,31,19]
+
+    {bus_id, departure_time} = Advent13.earliest_bus_i_can_take(arrival_time, bus_timetable)
+
+    assert bus_id == 59
+    assert departure_time == 944
   end
 
   test "parse puzzle input" do
@@ -15,7 +21,7 @@ defmodule Advent13Test do
 
     assert parsed == %{
       arrival_time: 939,
-      buses: [7,13,:out_of_service,:out_of_service,59,:out_of_service,31,19]
+      bus_timetable: [7,13,:out_of_service,:out_of_service,59,:out_of_service,31,19]
     }
   end
 
