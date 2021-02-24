@@ -1,14 +1,30 @@
 defmodule Advent13 do
 
   def closest_time_of_departure(arrival_time, bus_id) do
-    next_departure_time(arrival_time, bus_id, bus_id)
+    closest_time_of_departure(arrival_time, bus_id, bus_id)
   end
 
-  defp next_departure_time(arrival_time, departure_time, bus_id) do
-    if arrival_time <= departure_time do
-      departure_time
+  def parse_puzzle_input(stream) do
+    [first_line, second_line] = Enum.to_list(stream)
+
+    buses = second_line
+    |> String.split(",")
+    |> Enum.map(fn
+      "x" -> :out_of_service
+      bus_id -> String.to_integer(bus_id)
+    end)
+
+    %{
+      arrival_time: String.to_integer(first_line),
+      buses: buses
+    }
+  end
+
+  defp closest_time_of_departure(arrival_time, next_bus_departure_time, bus_id) do
+    if arrival_time <= next_bus_departure_time do
+      next_bus_departure_time
     else
-      next_departure_time(arrival_time, departure_time+bus_id, bus_id)
+      closest_time_of_departure(arrival_time, next_bus_departure_time+bus_id, bus_id)
     end
   end
 
