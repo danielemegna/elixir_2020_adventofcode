@@ -5,6 +5,18 @@ defmodule Advent13Test do
     assert Advent13.resolve_first_part() == 370
   end
 
+  @tag :skip
+  test "subsequent_departures_contest with provided example" do
+    parsed_input = %{
+      arrival_time: 939,
+      bus_timetable: [7,13,:out_of_service,:out_of_service,59,:out_of_service,31,19]
+    }
+
+    actual = Advent13.subsequent_departures_contest(parsed_input)
+
+    assert actual == 1068781
+  end
+
   test "bus_id_and_wait_factor with provided example" do
     parsed_input = %{
       arrival_time: 939,
@@ -12,7 +24,7 @@ defmodule Advent13Test do
     }
 
     actual = Advent13.bus_id_and_wait_factor(parsed_input)
-   
+
     assert actual == 59*(944-939)
   end
 
