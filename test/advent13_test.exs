@@ -6,12 +6,12 @@ defmodule Advent13Test do
   end
 
   test "bus_id_and_wait_factor with provided example" do
-    puzzle_input = """
-    939
-    7,13,x,x,59,x,31,19
-    """
+    parsed_input = %{
+      arrival_time: 939,
+      bus_timetable: [7,13,:out_of_service,:out_of_service,59,:out_of_service,31,19]
+    }
 
-    actual = Advent13.bus_id_and_wait_factor(stream_of(puzzle_input))
+    actual = Advent13.bus_id_and_wait_factor(parsed_input)
    
     assert actual == 59*(944-939)
   end
@@ -26,13 +26,13 @@ defmodule Advent13Test do
     assert bus_departure_time == 944
   end
 
-  test "parse puzzle input" do
-    puzzle_input = """
+  test "parse input file" do
+    input_file_content = """
     939
     7,13,x,x,59,x,31,19
     """
 
-    parsed = Advent13.parse_puzzle_input(stream_of(puzzle_input))
+    parsed = Advent13.parse_input_file(stream_of(input_file_content))
 
     assert parsed == %{
       arrival_time: 939,

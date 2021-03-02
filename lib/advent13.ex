@@ -2,16 +2,16 @@ defmodule Advent13 do
 
   def resolve_first_part() do
     read_input_file_content()
+    |> parse_input_file()
     |> bus_id_and_wait_factor()
   end
 
-  def bus_id_and_wait_factor(input_stream) do
-    input = parse_puzzle_input(input_stream)
-    {bus_id, bus_departure_time} = earliest_bus_i_can_take(input.arrival_time, input.bus_timetable)
-    bus_id * (bus_departure_time - input.arrival_time)
+  def bus_id_and_wait_factor(%{arrival_time: arrival_time, bus_timetable: bus_timetable}) do
+    {bus_id, bus_departure_time} = earliest_bus_i_can_take(arrival_time, bus_timetable)
+    bus_id * (bus_departure_time - arrival_time)
   end
 
-  def parse_puzzle_input(stream) do
+  def parse_input_file(stream) do
     [first_line, second_line] = Enum.to_list(stream)
 
     bus_timetable = second_line
