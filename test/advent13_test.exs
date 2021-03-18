@@ -5,18 +5,6 @@ defmodule Advent13Test do
     assert Advent13.resolve_first_part() == 370
   end
 
-  @tag :skip
-  test "subsequent_departures_contest with provided example" do
-    parsed_input = %{
-      arrival_time: 939,
-      bus_timetable: [7,13,:out_of_service,:out_of_service,59,:out_of_service,31,19]
-    }
-
-    actual = Advent13.subsequent_departures_contest(parsed_input)
-
-    assert actual == 1068781
-  end
-
   test "bus_id_and_wait_factor with provided example" do
     parsed_input = %{
       arrival_time: 939,
@@ -36,6 +24,22 @@ defmodule Advent13Test do
 
     assert bus_id == 59
     assert bus_departure_time == 944
+  end
+
+  test "subsequent_departures_contest with provided example" do
+    bus_timetable = [7,13,:out_of_service,:out_of_service,59,:out_of_service,31,19]
+
+    actual = Advent13.subsequent_departures_contest(bus_timetable)
+
+    assert actual == 1068781
+  end
+
+  test "some other subsequent_departures_contest" do
+    assert Advent13.subsequent_departures_contest([17,:out_of_service,13,19]) == 3417
+    assert Advent13.subsequent_departures_contest([67,7,59,61]) == 754018
+    assert Advent13.subsequent_departures_contest([67,:out_of_service,7,59,61]) == 779210
+    assert Advent13.subsequent_departures_contest([67,7,:out_of_service,59,61]) == 1261476
+    assert Advent13.subsequent_departures_contest([1789,37,47,1889]) == 1202161486
   end
 
   test "parse input file" do
