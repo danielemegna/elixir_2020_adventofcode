@@ -1,3 +1,16 @@
+defmodule BinaryCalculator do
+
+  def decimal_to_binary_string(decimal) do
+    Integer.to_string(decimal, 2)
+  end
+  
+  def binary_string_to_decimal(binary_string) do
+    {decimal, _remainder_of_binary} = Integer.parse(binary_string, 2)
+    decimal
+  end
+
+end
+
 defmodule Advent14 do
 
   def parse_input_file(stream) do

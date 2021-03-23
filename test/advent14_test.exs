@@ -25,9 +25,30 @@ defmodule Advent14Test do
     end
   end
 
-  # iex(1)> List.to_string(:io_lib.format("~36.2.0B", [11]))
-  # "000000000000000000000000000000001011"
-
   defp stream_of(content), do: content |> String.split("\n", trim: true) |> Stream.map(&(&1))
+
+end
+
+
+######################################################
+
+defmodule BinaryCalculatorTest do
+  use ExUnit.Case
+
+  test "convert decimal to binary string" do
+    assert BinaryCalculator.decimal_to_binary_string(0) == "0"
+    assert BinaryCalculator.decimal_to_binary_string(11) == "1011"
+    assert BinaryCalculator.decimal_to_binary_string(73) == "1001001"
+    assert BinaryCalculator.decimal_to_binary_string(101) == "1100101"
+    assert BinaryCalculator.decimal_to_binary_string(64) == "1000000"
+  end
+
+  test "convert binary string to decimal" do
+    assert BinaryCalculator.binary_string_to_decimal("0") == 0
+    assert BinaryCalculator.binary_string_to_decimal("1011") == 11
+    assert BinaryCalculator.binary_string_to_decimal("1001001") == 73
+    assert BinaryCalculator.binary_string_to_decimal("1100101") == 101
+    assert BinaryCalculator.binary_string_to_decimal("1000000") == 64
+  end
 
 end
