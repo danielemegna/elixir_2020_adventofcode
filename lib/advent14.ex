@@ -9,6 +9,15 @@ defmodule BinaryCalculator do
     decimal
   end
 
+  def apply_bitmask(decimal, bitmask) do
+    binary_representation = decimal_to_binary_string(decimal) 
+
+    reverse_binary_representation = binary_representation |> String.reverse
+    reverse_bitmask = bitmask |> String.reverse
+
+    nil
+  end
+
 end
 
 defmodule Advent14 do
