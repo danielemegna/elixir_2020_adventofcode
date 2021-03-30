@@ -5,10 +5,19 @@ defmodule Advent13Test do
     assert Advent13.resolve_first_part() == 370
   end
 
-  @tag :skip
-  @tag timeout: :infinity
   test "resolve second part" do
-    assert Advent13.resolve_second_part() == 100000370
+    assert Advent13.resolve_second_part() == 894954360381385
+  end
+
+  test "optimized_subsequent_departures_contest" do
+    assert Advent13.optimized_subsequent_departures_contest([67,7]) == 335
+    assert Advent13.optimized_subsequent_departures_contest([67,7,59]) == 6901
+
+    assert Advent13.optimized_subsequent_departures_contest([17,:out_of_service,13,19]) == 3417
+    assert Advent13.optimized_subsequent_departures_contest([67,7,59,61]) == 754018
+    assert Advent13.optimized_subsequent_departures_contest([67,:out_of_service,7,59,61]) == 779210
+    assert Advent13.optimized_subsequent_departures_contest([67,7,:out_of_service,59,61]) == 1261476
+    assert Advent13.optimized_subsequent_departures_contest([1789,37,47,1889]) == 1202161486
   end
 
   test "bus_id_and_wait_factor with provided example" do

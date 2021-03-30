@@ -10,7 +10,7 @@ defmodule Advent13 do
     read_input_file_content()
     |> parse_input_file()
     |> Map.get(:bus_timetable)
-    |> subsequent_departures_contest()
+    |> optimized_subsequent_departures_contest()
   end
 
   def bus_id_and_wait_factor(%{arrival_time: arrival_time, bus_timetable: bus_timetable}) do
@@ -26,6 +26,41 @@ defmodule Advent13 do
       {bus_id, bus_departure_time}
     end)
     |> Enum.min_by(fn {_bus_id, bus_departure_time} -> bus_departure_time end)
+  end
+
+  def optimized_subsequent_departures_contest(bus_timetable) do
+    indexed_bus_timetable = bus_timetable
+    |> Enum.with_index()
+    |> Enum.filter(fn {bus_id, _index} -> bus_id != :out_of_service end)
+
+    first_bus_id = Enum.at(bus_timetable, 0)
+
+    find_with(first_bus_id, Enum.drop(indexed_bus_timetable, 1), first_bus_id, nil)
+  end
+
+  def find_with(_pace, [], match_attempt, _first_match) do
+    match_attempt
+  end
+
+  def find_with(pace, [{next_bus_id, next_bus_id_index} | rest] = bus_timetable, match_attempt, first_match) do
+
+    desiderable_for_next = match_attempt+next_bus_id_index
+    match? = rem(desiderable_for_next, next_bus_id) == 0
+
+    if(match?) do
+      if(first_match == nil) do
+        if(rest == []) do
+          match_attempt
+        else
+          find_with(pace, bus_timetable, match_attempt+pace, match_attempt)
+        end
+      else
+        new_pace = trunc((match_attempt-first_match) / pace) * pace
+        find_with(new_pace, rest, first_match, nil)
+      end
+    else
+      find_with(pace, bus_timetable, match_attempt+pace, first_match)
+    end
   end
 
   def subsequent_departures_contest(bus_timetable) do
