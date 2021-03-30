@@ -6,6 +6,13 @@ defmodule Advent13 do
     |> bus_id_and_wait_factor()
   end
 
+  def resolve_second_part() do
+    read_input_file_content()
+    |> parse_input_file()
+    |> Map.get(:bus_timetable)
+    |> subsequent_departures_contest()
+  end
+
   def bus_id_and_wait_factor(%{arrival_time: arrival_time, bus_timetable: bus_timetable}) do
     {bus_id, bus_departure_time} = earliest_bus_i_can_take(arrival_time, bus_timetable)
     bus_id * (bus_departure_time - arrival_time)

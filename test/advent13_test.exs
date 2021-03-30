@@ -5,6 +5,12 @@ defmodule Advent13Test do
     assert Advent13.resolve_first_part() == 370
   end
 
+  @tag :skip
+  @tag timeout: :infinity
+  test "resolve second part" do
+    assert Advent13.resolve_second_part() == 100000370
+  end
+
   test "bus_id_and_wait_factor with provided example" do
     parsed_input = %{
       arrival_time: 939,
