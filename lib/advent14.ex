@@ -12,10 +12,23 @@ defmodule BinaryCalculator do
   def apply_bitmask(decimal, bitmask) do
     binary_representation = decimal_to_binary_string(decimal) 
 
-    reverse_binary_representation = binary_representation |> String.reverse
     reverse_bitmask = bitmask |> String.reverse
+    reverse_binary_representation = binary_representation
+    |> String.pad_leading(String.length(bitmask), "0")
+    |> String.reverse
 
-    nil
+    [reverse_bitmask, reverse_binary_representation]
+    |> Enum.map(&String.graphemes/1)
+    |> Enum.zip
+    |> Enum.map(fn {bitmask_item, binary_item} ->
+      case bitmask_item do
+        "X" -> binary_item
+        override -> override
+      end
+    end)
+    |> Enum.join()
+    |> String.reverse
+    |> binary_string_to_decimal
   end
 
 end

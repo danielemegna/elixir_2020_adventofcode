@@ -51,7 +51,6 @@ defmodule BinaryCalculatorTest do
     assert BinaryCalculator.binary_string_to_decimal("1000000") == 64
   end
 
-  @tag :skip
   test "apply bitmask to decimal" do
     assert BinaryCalculator.apply_bitmask(11, "XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X") == 73
     assert BinaryCalculator.apply_bitmask(101, "XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X") == 101
