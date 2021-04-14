@@ -23,7 +23,13 @@ defmodule Advent14Test do
     ]
   end
 
-  test "execute instructions on new machine" do
+  test "raise error on invalid input file" do
+    assert_raise ArgumentError, "Cannot parse input line 'invalid line'", fn ->
+      Advent14.parse_input_file(stream_of("invalid line"))
+    end
+  end
+
+  test "execute program instructions and get final memory state" do
     instructions = [
       {:set_mask, "XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X"},
       {:write, 8, 11},
@@ -40,10 +46,17 @@ defmodule Advent14Test do
     }
   end
 
-  test "raise error on invalid input file" do
-    assert_raise ArgumentError, "Cannot parse input line 'invalid line'", fn ->
-      Advent14.parse_input_file(stream_of("invalid line"))
-    end
+  test "execute program from file content and get memory values sum" do
+    input_file_content = """
+    mask = XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X
+    mem[8] = 11
+    mem[7] = 101
+    mem[8] = 0
+    """
+
+    result = Advent14.execute_program_and_sum_memory_values(stream_of(input_file_content))
+    
+    assert result == 165
   end
 
   defp stream_of(content), do: content |> String.split("\n", trim: true) |> Stream.map(&(&1))

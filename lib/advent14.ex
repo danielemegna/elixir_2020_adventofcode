@@ -39,6 +39,11 @@ defmodule Advent14 do
 
   def resolve_first_part do
     read_input_file_content()
+    |> execute_program_and_sum_memory_values()
+  end
+
+  def execute_program_and_sum_memory_values(program_file_content_stream) do
+    program_file_content_stream
     |> parse_input_file()
     |> execute_program()
     |> Map.delete(:bitmask)
