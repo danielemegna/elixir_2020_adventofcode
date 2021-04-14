@@ -35,6 +35,20 @@ end
 
 defmodule Advent14 do
 
+  def execute_program(instructions, machine_state \\ %{})
+  def execute_program([], machine_state), do: machine_state
+
+  def execute_program([{:set_mask, mask} | rest], machine_state) do
+    new_state = Map.put(machine_state, :bitmask, mask)
+    execute_program(rest, new_state)
+  end
+
+  def execute_program([{:write, value, address} | rest], machine_state) do
+    masked_value = BinaryCalculator.apply_bitmask(value, machine_state[:bitmask])
+    new_state = Map.put(machine_state, address, masked_value)
+    execute_program(rest, new_state)
+  end
+
   def parse_input_file(stream) do
     Enum.map(stream, fn line ->
       set_mask_regex = ~r/^mask = (.+)$/

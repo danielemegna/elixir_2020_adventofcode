@@ -19,6 +19,23 @@ defmodule Advent14Test do
     ]
   end
 
+  test "execute instructions on new machine" do
+    instructions = [
+      {:set_mask, "XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X"},
+      {:write, 11, 8},
+      {:write, 101, 7},
+      {:write, 0, 8},
+    ]
+    
+    state = Advent14.execute_program(instructions)
+
+    assert state == %{
+      :bitmask => "XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X",
+      7 => 101,
+      8 => 64
+    }
+  end
+
   test "raise error on invalid input file" do
     assert_raise ArgumentError, "Cannot parse input line 'invalid line'", fn ->
       Advent14.parse_input_file(stream_of("invalid line"))
