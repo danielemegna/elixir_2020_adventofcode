@@ -33,6 +33,8 @@ defmodule BinaryCalculator do
 
 end
 
+######################################################
+
 defmodule Advent14 do
 
   def execute_program(instructions, machine_state \\ %{})
@@ -43,7 +45,7 @@ defmodule Advent14 do
     execute_program(rest, new_state)
   end
 
-  def execute_program([{:write, value, address} | rest], machine_state) do
+  def execute_program([{:write, address, value} | rest], machine_state) do
     masked_value = BinaryCalculator.apply_bitmask(value, machine_state[:bitmask])
     new_state = Map.put(machine_state, address, masked_value)
     execute_program(rest, new_state)
@@ -59,7 +61,7 @@ defmodule Advent14 do
           {:set_mask, mask}
         Regex.match?(write_regex, line) ->
           [memory_address, value] = Regex.run(write_regex, line, capture: :all_but_first)
-          {:write, String.to_integer(value), String.to_integer(memory_address)}
+          {:write, String.to_integer(memory_address), String.to_integer(value)}
         true ->
           raise ArgumentError, message: "Cannot parse input line '#{line}'"
       end

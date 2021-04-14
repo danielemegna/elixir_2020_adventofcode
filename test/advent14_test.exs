@@ -13,18 +13,18 @@ defmodule Advent14Test do
 
     assert parsed == [
       {:set_mask, "XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X"},
-      {:write, 11, 8},
-      {:write, 101, 7},
-      {:write, 0, 8},
+      {:write, 8, 11},
+      {:write, 7, 101},
+      {:write, 8, 0},
     ]
   end
 
   test "execute instructions on new machine" do
     instructions = [
       {:set_mask, "XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X"},
-      {:write, 11, 8},
-      {:write, 101, 7},
-      {:write, 0, 8},
+      {:write, 8, 11},
+      {:write, 7, 101},
+      {:write, 8, 0},
     ]
     
     state = Advent14.execute_program(instructions)
@@ -45,7 +45,6 @@ defmodule Advent14Test do
   defp stream_of(content), do: content |> String.split("\n", trim: true) |> Stream.map(&(&1))
 
 end
-
 
 ######################################################
 
