@@ -37,6 +37,15 @@ end
 
 defmodule Advent14 do
 
+  def resolve_first_part do
+    read_input_file_content()
+    |> parse_input_file()
+    |> execute_program()
+    |> Map.delete(:bitmask)
+    |> Map.values()
+    |> Enum.sum()
+  end
+
   def execute_program(instructions, machine_state \\ %{})
   def execute_program([], machine_state), do: machine_state
 
@@ -66,6 +75,11 @@ defmodule Advent14 do
           raise ArgumentError, message: "Cannot parse input line '#{line}'"
       end
     end)
+  end
+
+  defp read_input_file_content do
+    File.stream!("advent14.txt")
+    |> Stream.map(&String.trim/1)
   end
 
 end

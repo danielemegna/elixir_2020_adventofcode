@@ -1,6 +1,10 @@
 defmodule Advent14Test do
   use ExUnit.Case
 
+  test "resolve first part" do
+    assert Advent14.resolve_first_part() == 7477696999511
+  end
+
   test "parse valid input file" do
     input_file_content = """
     mask = XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X
