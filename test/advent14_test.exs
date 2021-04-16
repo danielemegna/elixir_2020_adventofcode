@@ -29,7 +29,7 @@ defmodule Advent14Test do
     end
   end
 
-  test "execute program instructions and get final memory state" do
+  test "execute program instructions in value bitmask mode and get final memory state" do
     instructions = [
       {:set_mask, "XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X"},
       {:write, 8, 11},
@@ -37,7 +37,7 @@ defmodule Advent14Test do
       {:write, 8, 0},
     ]
     
-    state = Advent14.execute_program(instructions)
+    state = Advent14.execute_program(instructions, :value_mode)
 
     assert state == %{
       :bitmask => "XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X",
@@ -46,7 +46,26 @@ defmodule Advent14Test do
     }
   end
 
-  test "execute program from file content and get memory values sum" do
+  @tag :skip
+  test "execute program instructions in address bitmask mode and get final memory state" do
+    instructions = [
+      {:set_mask, "000000000000000000000000000000X1001X"},
+      {:write, 42, 100},
+      {:set_mask, "00000000000000000000000000000000X0XX"},
+      {:write, 26, 1}
+    ]
+    
+    state = Advent14.execute_program(instructions, :address_mode)
+
+    assert state == %{
+      :bitmask => "00000000000000000000000000000000X0XX",
+      58 => 100, 59 => 100,
+      16 => 1, 17 => 1, 18 => 1, 19 => 1,
+      24 => 1, 25 => 1, 26 => 1, 27 => 1,
+    }
+  end
+
+  test "execute program in value bitmask mode and get memory values sum" do
     input_file_content = """
     mask = XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X
     mem[8] = 11
@@ -54,9 +73,23 @@ defmodule Advent14Test do
     mem[8] = 0
     """
 
-    result = Advent14.execute_program_and_sum_memory_values(stream_of(input_file_content))
+    result = Advent14.execute_program_and_sum_memory_values(stream_of(input_file_content), :value_mode)
     
     assert result == 165
+  end
+
+  @tag :skip
+  test "execute program in address bitmask mode and get memory values sum" do
+    input_file_content = """
+    mask = 000000000000000000000000000000X1001X
+    mem[42] = 100
+    mask = 00000000000000000000000000000000X0XX
+    mem[26] = 1
+    """
+
+    result = Advent14.execute_program_and_sum_memory_values(stream_of(input_file_content), :address_mode)
+    
+    assert result == 208
   end
 
   defp stream_of(content), do: content |> String.split("\n", trim: true) |> Stream.map(&(&1))
@@ -90,4 +123,9 @@ defmodule BinaryCalculatorTest do
     assert BinaryCalculator.apply_bitmask(0, "XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X") == 64
   end
 
+  @tag :skip
+  test "apply bitmask to decimal using floating bit" do
+    assert BinaryCalculator.apply_bitmask_with_floating(42, "000000000000000000000000000000X1001X") == [26, 27, 58, 59]
+    assert BinaryCalculator.apply_bitmask_with_floating(26, "00000000000000000000000000000000X0XX") == [16, 17, 18, 19, 24, 25, 26, 27]
+  end
 end

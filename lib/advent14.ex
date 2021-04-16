@@ -31,6 +31,10 @@ defmodule BinaryCalculator do
     |> binary_string_to_decimal
   end
 
+  def apply_bitmask_with_floating(decimal, bitmask) do
+    []
+  end
+
 end
 
 ######################################################
@@ -39,30 +43,34 @@ defmodule Advent14 do
 
   def resolve_first_part do
     read_input_file_content()
-    |> execute_program_and_sum_memory_values()
+    |> execute_program_and_sum_memory_values(:value_mode)
   end
 
-  def execute_program_and_sum_memory_values(program_file_content_stream) do
+  def execute_program_and_sum_memory_values(program_file_content_stream, bitmask_mode) do
     program_file_content_stream
     |> parse_input_file()
-    |> execute_program()
+    |> execute_program(bitmask_mode)
     |> Map.delete(:bitmask)
     |> Map.values()
     |> Enum.sum()
   end
 
-  def execute_program(instructions, machine_state \\ %{})
-  def execute_program([], machine_state), do: machine_state
+  def execute_program(instructions, bitmask_mode, machine_state \\ %{})
+  def execute_program([], _, machine_state), do: machine_state
 
-  def execute_program([{:set_mask, mask} | rest], machine_state) do
+  def execute_program([{:set_mask, mask} | rest], bitmask_mode, machine_state) do
     new_state = Map.put(machine_state, :bitmask, mask)
-    execute_program(rest, new_state)
+    execute_program(rest, bitmask_mode, new_state)
   end
 
-  def execute_program([{:write, address, value} | rest], machine_state) do
+  def execute_program([{:write, address, value} | rest], :value_mode, machine_state) do
     masked_value = BinaryCalculator.apply_bitmask(value, machine_state[:bitmask])
     new_state = Map.put(machine_state, address, masked_value)
-    execute_program(rest, new_state)
+    execute_program(rest, :value_mode, new_state)
+  end
+
+  def execute_program([{:write, address, value} | rest], :address_mode, machine_state) do
+    execute_program(rest, :address_mode, machine_state)
   end
 
   def parse_input_file(stream) do
