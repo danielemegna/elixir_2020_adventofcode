@@ -5,6 +5,10 @@ defmodule Advent14Test do
     assert Advent14.resolve_first_part() == 7477696999511
   end
 
+  test "resolve second part" do
+    assert Advent14.resolve_second_part() == 3687727854171
+  end
+
   test "parse valid input file" do
     input_file_content = """
     mask = XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X
@@ -46,7 +50,6 @@ defmodule Advent14Test do
     }
   end
 
-  @tag :skip
   test "execute program instructions in address bitmask mode and get final memory state" do
     instructions = [
       {:set_mask, "000000000000000000000000000000X1001X"},
@@ -78,7 +81,6 @@ defmodule Advent14Test do
     assert result == 165
   end
 
-  @tag :skip
   test "execute program in address bitmask mode and get memory values sum" do
     input_file_content = """
     mask = 000000000000000000000000000000X1001X
@@ -123,7 +125,6 @@ defmodule BinaryCalculatorTest do
     assert BinaryCalculator.apply_bitmask(0, "XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X") == 64
   end
 
-  @tag :skip
   test "apply bitmask to decimal using floating bit" do
     assert BinaryCalculator.apply_bitmask_with_floating(42, "000000000000000000000000000000X1001X") == [26, 27, 58, 59]
     assert BinaryCalculator.apply_bitmask_with_floating(26, "00000000000000000000000000000000X0XX") == [16, 17, 18, 19, 24, 25, 26, 27]

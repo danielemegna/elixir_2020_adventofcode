@@ -32,7 +32,46 @@ defmodule BinaryCalculator do
   end
 
   def apply_bitmask_with_floating(decimal, bitmask) do
-    []
+    binary_representation = decimal_to_binary_string(decimal) 
+
+    reverse_bitmask = bitmask |> String.reverse
+    reverse_binary_representation = binary_representation
+    |> String.pad_leading(String.length(bitmask), "0")
+    |> String.reverse
+
+    masked_address = [reverse_bitmask, reverse_binary_representation]
+    |> Enum.map(&String.graphemes/1)
+    |> Enum.zip
+    |> Enum.map(fn {bitmask_item, binary_item} ->
+      case bitmask_item do
+        "0" -> binary_item
+        "1" -> "1"
+        "X" -> "X"
+      end
+    end)
+    |> Enum.reverse
+
+    Enum.reduce(masked_address, [], fn char, acc ->
+      case char do
+        "X" -> double_and_fork(acc)
+        _ -> add_to_all(acc, char)
+      end
+    end)
+    |> Enum.map(&Enum.join/1)
+    |> Enum.map(&binary_string_to_decimal/1)
+    |> Enum.sort
+  end
+
+  def add_to_all([], char), do: [[char]]
+  def add_to_all(list_of_lists, char) do
+    Enum.map(list_of_lists, fn list -> list ++ [char] end)
+  end
+
+  def double_and_fork([]), do: [["0"], ["1"]]
+  def double_and_fork(list_of_lists) do
+    head = add_to_all(list_of_lists, "0")
+    tail = add_to_all(list_of_lists, "1")
+    head ++ tail
   end
 
 end
@@ -44,6 +83,11 @@ defmodule Advent14 do
   def resolve_first_part do
     read_input_file_content()
     |> execute_program_and_sum_memory_values(:value_mode)
+  end
+
+  def resolve_second_part do
+    read_input_file_content()
+    |> execute_program_and_sum_memory_values(:address_mode)
   end
 
   def execute_program_and_sum_memory_values(program_file_content_stream, bitmask_mode) do
@@ -70,7 +114,11 @@ defmodule Advent14 do
   end
 
   def execute_program([{:write, address, value} | rest], :address_mode, machine_state) do
-    execute_program(rest, :address_mode, machine_state)
+    addresses = BinaryCalculator.apply_bitmask_with_floating(address, machine_state[:bitmask])
+    new_state = Enum.reduce(addresses, machine_state, fn address, m_state ->
+      Map.put(m_state, address, value)
+    end)
+    execute_program(rest, :address_mode, new_state)
   end
 
   def parse_input_file(stream) do
