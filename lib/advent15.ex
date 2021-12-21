@@ -9,18 +9,18 @@ defmodule Advent15 do
   end
 
   def spoken_numbers_stack_for(starting_numbers, limit) do
-    produce_spoken_numbers_stack(Enum.reverse(starting_numbers), limit) 
+    produce_spoken_numbers_stack(
+      Enum.reverse(starting_numbers),
+      limit - Enum.count(starting_numbers)
+    )
   end
 
-  defp produce_spoken_numbers_stack(stack, limit) do
+  defp produce_spoken_numbers_stack(stack, 0), do: stack
+  defp produce_spoken_numbers_stack(stack, remaining_work) do
     next = next_for(stack)
     new_stack = [next | stack]
 
-    if(limit == Enum.count(new_stack)) do
-      new_stack
-    else
-      produce_spoken_numbers_stack(new_stack, limit)
-    end
+    produce_spoken_numbers_stack(new_stack, remaining_work-1)
   end
 
   def next_for([head | tail]) do
