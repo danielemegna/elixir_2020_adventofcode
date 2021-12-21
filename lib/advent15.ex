@@ -4,6 +4,10 @@ defmodule Advent15 do
    last_spoken_number_for([13,0,10,12,1,5,8], 2020)
   end
 
+  def resolve_second_part() do
+   last_spoken_number_for([13,0,10,12,1,5,8], 30_000_000)
+  end
+
   def last_spoken_number_for(starting_numbers, limit) do
     spoken_numbers_stack_for(starting_numbers, limit) |> Enum.at(0)
   end

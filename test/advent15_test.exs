@@ -5,6 +5,11 @@ defmodule Advent15Test do
     assert Advent15.resolve_first_part() == 260
   end
 
+  @tag :skip
+  test "resolve second part" do
+    assert Advent15.resolve_second_part() == :todo
+  end
+
   describe "last spoken number" do
 
     test "short case" do
