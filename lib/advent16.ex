@@ -40,6 +40,26 @@ defmodule Advent16 do
     %Advent16.File{rules: rules, your_ticket: your_ticket, nearby_tickets: nearby_tickets}
   end
 
+  def error_rate_of(%Advent16.File{} = file) do
+    rules_ranges = file.rules
+    |> Enum.flat_map(&(&1.ranges))
+
+    file.nearby_tickets
+    |> Enum.map(fn ticket_fields ->
+      invalid_ticket_fields = Enum.filter(ticket_fields, fn field_value ->
+        is_invalid_for_every_rule?(field_value, rules_ranges)
+      end)
+      Enum.sum(invalid_ticket_fields)
+    end)
+    |> Enum.sum
+  end
+
+  defp is_invalid_for_every_rule?(field_value, rules_ranges) do
+    Enum.all?(rules_ranges, fn {r_min, r_max} ->
+      field_value < r_min || field_value > r_max
+    end)
+  end
+
   defp line_parse_error(line) do
     raise ArgumentError, message: "Cannot parse input line '#{line}'"
   end

@@ -36,6 +36,25 @@ defmodule Advent16Test do
     assert parsed == expected
   end
 
+  test "calc error rate of a file" do
+    file = %Advent16.File{
+      rules: MapSet.new([
+        %{ label: "class", ranges: [{1,3},{5,7}] },
+        %{ label: "row", ranges: [{6,11},{33,44}] },
+        %{ label: "seat", ranges: [{13,40},{45,50}] }
+      ]),
+      your_ticket: [],
+      nearby_tickets: MapSet.new([
+        [7,3,47],
+        [40,4,50],
+        [55,2,20],
+        [38,6,12]
+      ])
+    }
+
+    assert Advent16.error_rate_of(file) == 4 + 55 + 12
+  end
+
   defp stream_of(content), do: content |> String.split("\n") |> Stream.map(&(&1))
 
 end
