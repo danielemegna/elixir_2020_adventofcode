@@ -1,4 +1,4 @@
-defmodule TicketFile do
+defmodule Advent16.File do
   @enforce_keys [:rules,:your_ticket,:nearby_tickets]
   defstruct @enforce_keys
 end
@@ -37,7 +37,7 @@ defmodule Advent16 do
     end)
     |> MapSet.new()
 
-    %TicketFile{rules: rules, your_ticket: your_ticket, nearby_tickets: nearby_tickets}
+    %Advent16.File{rules: rules, your_ticket: your_ticket, nearby_tickets: nearby_tickets}
   end
 
   defp line_parse_error(line) do

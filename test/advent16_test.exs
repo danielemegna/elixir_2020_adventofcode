@@ -19,7 +19,7 @@ defmodule Advent16Test do
 
     parsed = Advent16.parse_input_file(stream_of(input_file_content))
 
-    expected = %TicketFile{
+    expected = %Advent16.File{
       rules: MapSet.new([
         %{ label: "class", ranges: [{1,3},{5,7}] },
         %{ label: "row", ranges: [{6,11},{33,44}] },
