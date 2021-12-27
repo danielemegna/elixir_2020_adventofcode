@@ -1,6 +1,10 @@
 defmodule Advent16Test do
   use ExUnit.Case
 
+  test "resolve first part" do
+    assert Advent16.resolve_first_part() == 27898
+  end
+
   test "parse valid input file" do
     input_file_content = """
     class: 1-3 or 5-7

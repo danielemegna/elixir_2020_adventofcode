@@ -5,6 +5,12 @@ end
 
 defmodule Advent16 do
 
+  def resolve_first_part() do
+    read_input_file_content()
+    |> parse_input_file()
+    |> error_rate_of()
+  end
+
   def parse_input_file(lines) do
     [rules_lines, your_ticket_lines, nearby_tickets_lines] =
       Enum.chunk_by(lines, fn l -> l == "" end) |> Enum.reject(&(&1 == [""]))
@@ -62,6 +68,11 @@ defmodule Advent16 do
 
   defp line_parse_error(line) do
     raise ArgumentError, message: "Cannot parse input line '#{line}'"
+  end
+
+  defp read_input_file_content do
+    File.stream!("advent16.txt")
+    |> Stream.map(&String.trim/1)
   end
 
 end
