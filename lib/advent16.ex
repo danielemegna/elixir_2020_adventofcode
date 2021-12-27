@@ -23,8 +23,19 @@ defmodule Advent16 do
       end
     end)
 
-    your_ticket = nil # TODO 
-    nearby_tickets = MapSet.new() # TODO
+    your_ticket = your_ticket_lines
+    |> Enum.at(1)
+    |> String.split(",")
+    |> Enum.map(&(String.to_integer(&1)))
+
+    nearby_tickets = nearby_tickets_lines
+    |> Enum.drop(1)
+    |> Enum.map(fn ticket ->
+      ticket
+      |> String.split(",")
+      |> Enum.map(&(String.to_integer(&1)))
+    end)
+    |> MapSet.new()
 
     %TicketFile{rules: rules, your_ticket: your_ticket, nearby_tickets: nearby_tickets}
   end

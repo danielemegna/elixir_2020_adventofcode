@@ -33,8 +33,7 @@ defmodule Advent16Test do
         [38,6,12]
       ])
     }
-    assert parsed.rules == expected.rules
-    #assert parsed == expected
+    assert parsed == expected
   end
 
   defp stream_of(content), do: content |> String.split("\n") |> Stream.map(&(&1))
