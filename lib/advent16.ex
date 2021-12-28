@@ -59,40 +59,45 @@ defmodule Advent16 do
     fields_mapping = infer_fields_mapping(file)
 
     fields_mapping
-    |> Enum.map(fn {label,index} ->
-      if(String.starts_with?(label, "departure")) do
-        Enum.at(file.your_ticket, index)
-      else
-        1
-      end
-    end)
+    |> Enum.filter(fn {label,_} -> label |> String.starts_with?("departure") end)
+    |> Enum.map(fn {_,index} -> file.your_ticket |> Enum.at(index) end)
     |> Enum.product()
   end
 
   def infer_fields_mapping(%Advent16.File{} = file) do
+    file.nearby_tickets |> Enum.reduce(
+      %{ remaining_rules: file.rules, compatibility_map: %{}, revealed: %{} },
+      fn ticket, acc ->
 
-    final = file.nearby_tickets
-    |> Enum.reduce(%{ compatibility_map: %{}, revealed: %{}, rules: file.rules }, fn ticket, file_accumulator ->
+        new_compatibility_map = merge_compatibility_maps(
+          acc.compatibility_map,
+          compatibility_map_of(ticket, acc.remaining_rules)
+        )
 
-      ticket_compatibility_map = ticket
-      |> Enum.with_index
-      |> Enum.reduce(%{}, fn {field_value, index}, ticket_accumulator ->
-        compatible_labels = file_accumulator.rules
-        |> Enum.filter(&(is_valid?(field_value, &1)))
-        |> Enum.map(&(&1.label))
+        new_acc = %{ acc | compatibility_map: new_compatibility_map }
+        compute_reveals(new_acc)
+      end
+    ) |> Map.get(:revealed)
+  end
 
-        Map.put(ticket_accumulator, index, compatible_labels)
-      end)
-
-      new_compatibility_map = Map.merge(file_accumulator.compatibility_map, ticket_compatibility_map, fn _index, v1, v2 ->
-        MapSet.intersection(MapSet.new(v1), MapSet.new(v2)) |> Enum.to_list
-      end)
-
-      new_file_accumulator = %{ file_accumulator | compatibility_map: new_compatibility_map }
-      compute_reveals(new_file_accumulator)
+  defp compatibility_map_of(ticket, rules) do
+    ticket
+    |> Enum.with_index
+    |> Enum.map(fn {field_value, index} ->
+      compatible_labels = rules
+      |> Enum.filter(&(is_valid?(field_value, &1)))
+      |> Enum.map(&(&1.label))
+      {index, compatible_labels}
     end)
+    |> Map.new()
+  end
 
-    final.revealed
+  defp merge_compatibility_maps(map1, map2) do
+    Map.merge(map1, map2,
+      fn _index, compatible_labels_1, compatible_labels_2 ->
+        compatible_labels_1 -- (compatible_labels_1 -- compatible_labels_2)
+      end
+    )
   end
 
   defp compute_reveals(accumulator) do
@@ -113,7 +118,7 @@ defmodule Advent16 do
       new_accumulator = %{ accumulator |
         compatibility_map: new_compatibility_map,
         revealed: accumulator.revealed |> Map.merge(revealed),
-        rules: accumulator.rules |> Enum.reject(fn %{label: rule_label} ->
+        remaining_rules: accumulator.remaining_rules |> Enum.reject(fn %{label: rule_label} ->
           Enum.member?(revealed_labels, rule_label)
         end)
       }
