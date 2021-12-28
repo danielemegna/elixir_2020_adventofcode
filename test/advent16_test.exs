@@ -21,7 +21,7 @@ defmodule Advent16Test do
     38,6,12
     """
 
-    parsed = Advent16.parse_input_file(stream_of(input_file_content))
+    parsed = Advent16.File.from_file_content(stream_of(input_file_content))
 
     expected = %Advent16.File{
       rules: MapSet.new([
