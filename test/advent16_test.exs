@@ -5,6 +5,30 @@ defmodule Advent16Test do
     assert Advent16.resolve_first_part() == 27898
   end
 
+  test "resolve second part" do
+    assert Advent16.resolve_second_part() == 2766491048287
+  end
+
+  test "infer_fields_mapping from file" do
+    file = %Advent16.File{
+      rules: MapSet.new([
+        %{ label: "class", ranges: [{0,1},{4,19}] },
+        %{ label: "row", ranges: [{0,5},{8,19}] },
+        %{ label: "seat", ranges: [{0,13},{16,19}] }
+      ]),
+      your_ticket: [],
+      nearby_tickets: MapSet.new([
+        [3,9,18],
+        [15,1,5],
+        [5,14,9]
+      ])
+    }
+
+    actual = Advent16.infer_fields_mapping(file)
+
+    assert actual == %{"class" => 1, "row" => 0, "seat" => 2}
+  end
+
   test "parse valid input file" do
     input_file_content = """
     class: 1-3 or 5-7
