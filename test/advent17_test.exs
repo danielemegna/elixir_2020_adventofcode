@@ -19,42 +19,42 @@ defmodule Advent17Test do
     ]
   end
 
-  describe "alive_neighbors" do
+  describe "active_neighbors" do
 
     setup do
-      alive_cubes = [
+      active_cubes = [
         {1,0,0},
         {2,1,0},
         {0,2,0},
         {1,2,0},
         {2,2,0}
       ]
-      [c: alive_cubes]
+      [c: active_cubes]
     end
 
-    test "of an alive cube", %{c: alive_cubes} do
-      assert 1 == Advent17.alive_neighbors(alive_cubes, {1,0,0})
-      assert 3 == Advent17.alive_neighbors(alive_cubes, {2,1,0})
-      assert 3 == Advent17.alive_neighbors(alive_cubes, {1,2,0})
+    test "of an active cube", %{c: active_cubes} do
+      assert 1 == Advent17.active_neighbors(active_cubes, {1,0,0})
+      assert 3 == Advent17.active_neighbors(active_cubes, {2,1,0})
+      assert 3 == Advent17.active_neighbors(active_cubes, {1,2,0})
     end
 
-    test "of a dead cube in known limits", %{c: alive_cubes} do
-      assert 3 == Advent17.alive_neighbors(alive_cubes, {0,1,0})
-      assert 5 == Advent17.alive_neighbors(alive_cubes, {1,1,0})
+    test "of a inactive cube in known limits", %{c: active_cubes} do
+      assert 3 == Advent17.active_neighbors(active_cubes, {0,1,0})
+      assert 5 == Advent17.active_neighbors(active_cubes, {1,1,0})
     end
 
-    test "of a dead cube out known limits in same layer", %{c: alive_cubes} do
-      assert 1 == Advent17.alive_neighbors(alive_cubes, {0,-1,0})
-      assert 3 == Advent17.alive_neighbors(alive_cubes, {1,3,0})
-      assert 0 == Advent17.alive_neighbors(alive_cubes, {-99,99,0})
+    test "of a inactive cube out known limits in same layer", %{c: active_cubes} do
+      assert 1 == Advent17.active_neighbors(active_cubes, {0,-1,0})
+      assert 3 == Advent17.active_neighbors(active_cubes, {1,3,0})
+      assert 0 == Advent17.active_neighbors(active_cubes, {-99,99,0})
     end
 
-    test "of a dead cube in another layer", %{c: alive_cubes} do
-      assert 5 == Advent17.alive_neighbors(alive_cubes, {1,1,-1})
-      assert 5 == Advent17.alive_neighbors(alive_cubes, {1,1,1})
-      assert 3 == Advent17.alive_neighbors(alive_cubes, {1,3,-1})
-      assert 0 == Advent17.alive_neighbors(alive_cubes, {1,1,99})
-      assert 0 == Advent17.alive_neighbors(alive_cubes, {1,1,-99})
+    test "of a inactive cube in another layer", %{c: active_cubes} do
+      assert 5 == Advent17.active_neighbors(active_cubes, {1,1,-1})
+      assert 5 == Advent17.active_neighbors(active_cubes, {1,1,1})
+      assert 3 == Advent17.active_neighbors(active_cubes, {1,3,-1})
+      assert 0 == Advent17.active_neighbors(active_cubes, {1,1,99})
+      assert 0 == Advent17.active_neighbors(active_cubes, {1,1,-99})
     end
 
   end

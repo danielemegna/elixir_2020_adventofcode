@@ -1,8 +1,8 @@
 defmodule Advent17 do
 
-  def alive_neighbors(alive_cubes, coordinate) do
+  def active_neighbors(active_cubes, coordinate) do
     neighbors_coordinates = neighbors_coordinates_of(coordinate)
-    (alive_cubes -- (alive_cubes -- neighbors_coordinates))
+    (active_cubes -- (active_cubes -- neighbors_coordinates))
     |> Enum.count
   end
 
