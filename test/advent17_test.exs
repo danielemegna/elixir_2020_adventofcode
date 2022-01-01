@@ -59,6 +59,34 @@ defmodule Advent17Test do
 
   end
 
+  test "execute_cycle" do
+    from = [
+      {1,0,0},
+      {2,1,0},
+      {0,2,0},
+      {1,2,0},
+      {2,2,0}
+    ]
+
+    actual = Advent17.execute_cycle(from)
+
+    assert MapSet.new(actual) == MapSet.new([
+      {0,1,-1},
+      {2,2,-1},
+      {1,3,-1},
+
+      {0,1,0},
+      {2,1,0},
+      {1,2,0},
+      {2,2,0},
+      {1,3,0},
+
+      {0,1,1},
+      {2,2,1},
+      {1,3,1},
+    ])
+  end
+
   defp stream_of(content), do: content |> String.split("\n") |> Stream.map(&(&1))
 
 end

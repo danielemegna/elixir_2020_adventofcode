@@ -67,4 +67,33 @@ defmodule Advent17 do
     end)
   end
 
+  def execute_cycle(active_cubes) do
+    {xs,ys,zs} = active_cubes
+    |> Enum.reduce({[],[],[]}, fn {x,y,z}, {xs,ys,zs} ->
+      { [x | xs], [y | ys], [z | zs] }
+    end)
+
+    (Enum.min(xs)-1)..(Enum.max(xs)+1)
+    |> Enum.flat_map(fn x ->
+      (Enum.min(ys)-1)..(Enum.max(ys)+1)
+      |> Enum.flat_map(fn y ->
+        (Enum.min(zs)-1)..(Enum.max(zs)+1)
+        |> Enum.map(fn z ->
+          current = {x,y,z}
+          was_active? = Enum.member?(active_cubes, current)
+          active_neighbors = active_neighbors(active_cubes, current)
+          case next_state(was_active?, active_neighbors) do
+            :active -> current
+            :inactive -> nil
+          end
+        end)
+      end)
+    end)
+    |> Enum.reject(&is_nil/1)
+  end
+
+  defp next_state(true, active_neighbors) when active_neighbors in [2,3], do: :active
+  defp next_state(false, 3), do: :active
+  defp next_state(_, _), do: :inactive
+
 end
