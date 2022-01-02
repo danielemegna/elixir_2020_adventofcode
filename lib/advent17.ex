@@ -1,4 +1,18 @@
 defmodule Advent17 do
+  
+  def resolve_first_part do
+    read_input_file_content()
+    |> parse_inital_configuration()
+    |> active_after(6)
+  end
+
+  def active_after(initial_configuration, cycles) do
+    1..cycles
+    |> Enum.reduce(initial_configuration, fn _, active_cubes ->
+      execute_cycle(active_cubes)
+    end)
+    |> Enum.count
+  end
 
   def active_neighbors(active_cubes, coordinate) do
     neighbors_coordinates = neighbors_coordinates_of(coordinate)
@@ -94,6 +108,11 @@ defmodule Advent17 do
       {x,y,z-1},
       {x+1,y,z-1},
     ]
+  end
+
+  defp read_input_file_content do
+    File.stream!("advent17.txt")
+    |> Stream.map(&String.trim/1)
   end
 
 end

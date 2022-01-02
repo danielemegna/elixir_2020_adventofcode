@@ -1,6 +1,10 @@
 defmodule Advent17Test do
   use ExUnit.Case
 
+  test "resolve first part" do
+    assert Advent17.resolve_first_part() == 255
+  end
+
   test "parse initial configuration" do
     lines = stream_of("""
     .#.
@@ -85,6 +89,18 @@ defmodule Advent17Test do
       {2,2,1},
       {1,3,1},
     ])
+  end
+
+  test "alive after n cycles" do
+    from = [
+      {1,0,0},
+      {2,1,0},
+      {0,2,0},
+      {1,2,0},
+      {2,2,0}
+    ]
+
+    assert 112 == Advent17.active_after(from, 6)
   end
 
   defp stream_of(content), do: content |> String.split("\n") |> Stream.map(&(&1))
