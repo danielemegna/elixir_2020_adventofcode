@@ -6,51 +6,6 @@ defmodule Advent17 do
     |> Enum.count
   end
 
-  defp neighbors_coordinates_of({x,y,z}) do
-    # TODO: generate this ?
-
-    [
-      {x,y-1,z},
-      {x-1,y-1,z},
-      {x+1,y-1,z},
-
-      {x,y+1,z},
-      {x+1,y+1,z},
-      {x-1,y+1,z},
-
-      {x-1,y,z},
-      {x+1,y,z},
-
-      # --------
-
-      {x,y-1,z+1},
-      {x-1,y-1,z+1},
-      {x+1,y-1,z+1},
-
-      {x,y+1,z+1},
-      {x+1,y+1,z+1},
-      {x-1,y+1,z+1},
-
-      {x-1,y,z+1},
-      {x,y,z+1},
-      {x+1,y,z+1},
-
-      # --------
-
-      {x,y-1,z-1},
-      {x-1,y-1,z-1},
-      {x+1,y-1,z-1},
-
-      {x,y+1,z-1},
-      {x+1,y+1,z-1},
-      {x-1,y+1,z-1},
-
-      {x-1,y,z-1},
-      {x,y,z-1},
-      {x+1,y,z-1},
-    ]
-  end
-
   def parse_inital_configuration(lines) do
     lines
     |> Enum.with_index
@@ -95,5 +50,50 @@ defmodule Advent17 do
   defp next_state(true, active_neighbors) when active_neighbors in [2,3], do: :active
   defp next_state(false, 3), do: :active
   defp next_state(_, _), do: :inactive
+
+  defp neighbors_coordinates_of({x,y,z}) do
+    # TODO: generate this ?
+
+    [
+      {x,y-1,z},
+      {x-1,y-1,z},
+      {x+1,y-1,z},
+
+      {x,y+1,z},
+      {x+1,y+1,z},
+      {x-1,y+1,z},
+
+      {x-1,y,z},
+      {x+1,y,z},
+
+      # --------
+
+      {x,y-1,z+1},
+      {x-1,y-1,z+1},
+      {x+1,y-1,z+1},
+
+      {x,y+1,z+1},
+      {x+1,y+1,z+1},
+      {x-1,y+1,z+1},
+
+      {x-1,y,z+1},
+      {x,y,z+1},
+      {x+1,y,z+1},
+
+      # --------
+
+      {x,y-1,z-1},
+      {x-1,y-1,z-1},
+      {x+1,y-1,z-1},
+
+      {x,y+1,z-1},
+      {x+1,y+1,z-1},
+      {x-1,y+1,z-1},
+
+      {x-1,y,z-1},
+      {x,y,z-1},
+      {x+1,y,z-1},
+    ]
+  end
 
 end
