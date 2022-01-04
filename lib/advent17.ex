@@ -14,7 +14,7 @@ defmodule Advent17 do
     |> Enum.count
   end
 
-  def active_neighbors(active_cubes, coordinate) do
+  def active_neighbors_of(active_cubes, coordinate) do
     neighbors_coordinates = neighbors_coordinates_of(coordinate)
     (active_cubes -- (active_cubes -- neighbors_coordinates))
     |> Enum.count
@@ -43,7 +43,7 @@ defmodule Advent17 do
     end)
     |> parallel_map(fn current ->
       was_active? = Enum.member?(active_cubes, current)
-      active_neighbors = active_neighbors(active_cubes, current)
+      active_neighbors = active_neighbors_of(active_cubes, current)
       case next_state(was_active?, active_neighbors) do
         :active -> current
         :inactive -> nil
