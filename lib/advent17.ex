@@ -23,7 +23,7 @@ defmodule Advent17 do
 
   def active_neighbors_of(active_cubes, coordinate) do
     neighbors_coordinates = neighbors_coordinates_of(coordinate)
-    (active_cubes -- (active_cubes -- neighbors_coordinates))
+    MapSet.intersection(MapSet.new(active_cubes), MapSet.new(neighbors_coordinates))
     |> Enum.count
   end
 
