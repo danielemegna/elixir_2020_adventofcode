@@ -5,22 +5,44 @@ defmodule Advent17Test do
     assert Advent17.resolve_first_part() == 255
   end
 
-  test "parse initial configuration" do
-    lines = stream_of("""
-    .#.
-    ..#
-    ###
-    """)
-
-    actual = Advent17.parse_inital_configuration(lines)
-
-    assert actual == [
+  test "active after n cycles" do
+    from = [
       {1,0,0},
       {2,1,0},
       {0,2,0},
       {1,2,0},
       {2,2,0}
     ]
+
+    assert 112 == Advent17.active_after(from, 6)
+  end
+
+  test "execute_cycle" do
+    from = [
+      {1,0,0},
+      {2,1,0},
+      {0,2,0},
+      {1,2,0},
+      {2,2,0}
+    ]
+
+    actual = Advent17.execute_cycle(from)
+
+    assert MapSet.new(actual) == MapSet.new([
+      {0,1,-1},
+      {2,2,-1},
+      {1,3,-1},
+
+      {0,1,0},
+      {2,1,0},
+      {1,2,0},
+      {2,2,0},
+      {1,3,0},
+
+      {0,1,1},
+      {2,2,1},
+      {1,3,1},
+    ])
   end
 
   describe "active_neighbors" do
@@ -63,44 +85,22 @@ defmodule Advent17Test do
 
   end
 
-  test "execute_cycle" do
-    from = [
+  test "parse initial configuration" do
+    lines = stream_of("""
+    .#.
+    ..#
+    ###
+    """)
+
+    actual = Advent17.parse_inital_configuration(lines)
+
+    assert actual == [
       {1,0,0},
       {2,1,0},
       {0,2,0},
       {1,2,0},
       {2,2,0}
     ]
-
-    actual = Advent17.execute_cycle(from)
-
-    assert MapSet.new(actual) == MapSet.new([
-      {0,1,-1},
-      {2,2,-1},
-      {1,3,-1},
-
-      {0,1,0},
-      {2,1,0},
-      {1,2,0},
-      {2,2,0},
-      {1,3,0},
-
-      {0,1,1},
-      {2,2,1},
-      {1,3,1},
-    ])
-  end
-
-  test "alive after n cycles" do
-    from = [
-      {1,0,0},
-      {2,1,0},
-      {0,2,0},
-      {1,2,0},
-      {2,2,0}
-    ]
-
-    assert 112 == Advent17.active_after(from, 6)
   end
 
   defp stream_of(content), do: content |> String.split("\n") |> Stream.map(&(&1))
