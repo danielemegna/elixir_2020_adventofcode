@@ -74,8 +74,23 @@ defmodule Advent17 do
       end)
     end)
     |> Enum.reject(&(&1 == {x,y,z}))
+  end
 
-
+  defp neighbors_coordinates_of({x,y,z,w}) do
+    [x-1, x, x+1]
+    |> Enum.flat_map(fn x ->
+      [y-1, y, y+1]
+      |> Enum.flat_map(fn y ->
+        [z-1, z, z+1]
+        |> Enum.flat_map(fn z ->
+          [w-1, w, w+1]
+          |> Enum.map(fn w ->
+            {x,y,z,w}
+          end)
+        end)
+      end)
+    end)
+    |> Enum.reject(&(&1 == {x,y,z,w}))
   end
 
   defp read_input_file_content do

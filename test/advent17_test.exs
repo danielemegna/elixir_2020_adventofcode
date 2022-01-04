@@ -17,6 +17,18 @@ defmodule Advent17Test do
     assert 112 == Advent17.active_after(from, 6)
   end
 
+  test "active after n cycles in 4 dimensions" do
+    from = [
+      {1,0,0,0},
+      {2,1,0,0},
+      {0,2,0,0},
+      {1,2,0,0},
+      {2,2,0,0}
+    ]
+
+    assert 848 == Advent17.active_after(from, 6)
+  end
+
   test "execute_cycle" do
     from = [
       {1,0,0},
