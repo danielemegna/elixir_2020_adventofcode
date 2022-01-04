@@ -6,6 +6,13 @@ defmodule Advent17 do
     |> active_after(6)
   end
 
+  def resolve_second_part do
+    read_input_file_content()
+    |> parse_inital_configuration()
+    |> add_fourth_dimension()
+    |> active_after(6)
+  end
+
   def active_after(initial_configuration, cycles) do
     1..cycles
     |> Enum.reduce(initial_configuration, fn _, active_cubes ->
@@ -91,6 +98,10 @@ defmodule Advent17 do
       end)
     end)
     |> Enum.reject(&(&1 == {x,y,z,w}))
+  end
+
+  defp add_fourth_dimension(active_cubes) do
+    active_cubes |> Enum.map(&(Tuple.append(&1, 0)))
   end
 
   defp read_input_file_content do

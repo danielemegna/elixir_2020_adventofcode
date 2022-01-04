@@ -5,6 +5,11 @@ defmodule Advent17Test do
     assert Advent17.resolve_first_part() == 255
   end
 
+  @tag :skip # slow test
+  test "resolve second part" do
+    assert Advent17.resolve_second_part() == 2340
+  end
+
   test "active after n cycles" do
     from = [
       {1,0,0},
@@ -17,6 +22,7 @@ defmodule Advent17Test do
     assert 112 == Advent17.active_after(from, 6)
   end
 
+  @tag :skip # slow test
   test "active after n cycles in 4 dimensions" do
     from = [
       {1,0,0,0},
