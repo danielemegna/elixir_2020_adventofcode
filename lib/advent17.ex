@@ -63,48 +63,19 @@ defmodule Advent17 do
   defp next_state(_, _), do: :inactive
 
   defp neighbors_coordinates_of({x,y,z}) do
-    # TODO: generate this ?
+    [x-1, x, x+1]
+    |> Enum.flat_map(fn x ->
+      [y-1, y, y+1]
+      |> Enum.flat_map(fn y ->
+        [z-1, z, z+1]
+        |> Enum.map(fn z ->
+          {x,y,z}
+        end)
+      end)
+    end)
+    |> Enum.reject(&(&1 == {x,y,z}))
 
-    [
-      {x,y-1,z},
-      {x-1,y-1,z},
-      {x+1,y-1,z},
 
-      {x,y+1,z},
-      {x+1,y+1,z},
-      {x-1,y+1,z},
-
-      {x-1,y,z},
-      {x+1,y,z},
-
-      # --------
-
-      {x,y-1,z+1},
-      {x-1,y-1,z+1},
-      {x+1,y-1,z+1},
-
-      {x,y+1,z+1},
-      {x+1,y+1,z+1},
-      {x-1,y+1,z+1},
-
-      {x-1,y,z+1},
-      {x,y,z+1},
-      {x+1,y,z+1},
-
-      # --------
-
-      {x,y-1,z-1},
-      {x-1,y-1,z-1},
-      {x+1,y-1,z-1},
-
-      {x,y+1,z-1},
-      {x+1,y+1,z-1},
-      {x-1,y+1,z-1},
-
-      {x-1,y,z-1},
-      {x,y,z-1},
-      {x+1,y,z-1},
-    ]
   end
 
   defp read_input_file_content do
