@@ -19,8 +19,7 @@ defmodule Advent18 do
   defp compute(["(" | rest], {accumulated, next_operation}) do
     inner = compute(rest)
     computed = calc(accumulated, inner, next_operation)
-    rest = Enum.drop_while(rest, &(&1 != ")"))
-    compute(rest, {computed, nil})
+    compute(drop_rest(rest), {computed, nil})
   end
 
   defp compute([")" | _], {accumulated, _}), do: accumulated
@@ -33,4 +32,14 @@ defmodule Advent18 do
 
   defp calc(prev, current, :sum), do: prev + current
   defp calc(prev, current, :prod), do: prev * current
+
+  defp drop_rest([first | rest], nest_level \\ 0) do
+    case {first, nest_level} do
+      {")", 0} -> rest
+      {")", _} -> drop_rest(rest, nest_level-1)
+      {"(", _} -> drop_rest(rest, nest_level+1)
+      _ -> drop_rest(rest, nest_level)
+    end
+  end
+
 end
