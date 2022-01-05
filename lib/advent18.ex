@@ -5,29 +5,31 @@ defmodule Advent18 do
     |> String.replace("(", "( ")
     |> String.replace(")", " )")
     |> String.split()
-    |> compute()
+    |> evaluate()
   end
 
-  defp compute(list), do: compute(list, {0, :sum})
+  defp evaluate(list), do: evaluate(list, {0, :sum})
 
-  defp compute(["+" | rest], {accumulated, _}), do:
-    compute(rest, {accumulated, :sum})
+  defp evaluate(["+" | rest], {accumulated, _}), do:
+    evaluate(rest, {accumulated, :sum})
 
-  defp compute(["*" | rest], {accumulated, _}), do:
-    compute(rest, {accumulated, :prod})
+  defp evaluate(["*" | rest], {accumulated, _}), do:
+    evaluate(rest, {accumulated, :prod})
 
-  defp compute(["(" | rest], {accumulated, next_operation}) do
-    inner = compute(rest)
-    computed = calc(accumulated, inner, next_operation)
-    compute(drop_rest(rest), {computed, nil})
+  defp evaluate(["(" | rest], {accumulated, next_operation}) do
+    # TODO slice in "inner list" and "rest without it"
+    # instead of passing entire rest to evaluate and drop it at the end
+    inner_evaluation = evaluate(rest)
+    operation_result = calc(accumulated, inner_evaluation, next_operation)
+    evaluate(drop_rest(rest), {operation_result, nil})
   end
 
-  defp compute([")" | _], {accumulated, _}), do: accumulated
-  defp compute([], {accumulated, _}), do: accumulated
+  defp evaluate([")" | _], {accumulated, _}), do: accumulated
+  defp evaluate([], {accumulated, _}), do: accumulated
 
-  defp compute([n | rest], {accumulated, next_operation}) do
-    computed = calc(accumulated, String.to_integer(n), next_operation)
-    compute(rest, {computed, nil})
+  defp evaluate([n | rest], {accumulated, next_operation}) do
+    operation_result = calc(accumulated, String.to_integer(n), next_operation)
+    evaluate(rest, {operation_result, nil})
   end
 
   defp calc(prev, current, :sum), do: prev + current
