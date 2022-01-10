@@ -17,11 +17,10 @@ defmodule Advent18 do
     evaluate(rest, {accumulated, :prod})
 
   defp evaluate(["(" | rest], {accumulated, next_operation}) do
-    # TODO slice in "inner list" and "rest without it"
-    # instead of passing entire rest to evaluate and drop it at the end
-    inner_evaluation = evaluate(rest)
+    {inner, [_|rest]} = rest |> Enum.split(close_parenthesis_index(rest))
+    inner_evaluation = evaluate(inner)
     operation_result = calc(accumulated, inner_evaluation, next_operation)
-    evaluate(drop_rest(rest), {operation_result, nil})
+    evaluate(rest, {operation_result, nil})
   end
 
   defp evaluate([")" | _], {accumulated, _}), do: accumulated
@@ -34,6 +33,19 @@ defmodule Advent18 do
 
   defp calc(prev, current, :sum), do: prev + current
   defp calc(prev, current, :prod), do: prev * current
+
+  defp close_parenthesis_index(list) do
+    list
+    |> Stream.with_index()
+    |> Enum.reduce_while(0, fn {c, idx}, nest_level ->
+      case {c, nest_level} do
+        {")", 0} -> {:halt, idx}
+        {"(", _} -> {:cont, nest_level+1}
+        {")", _} -> {:cont, nest_level-1}
+        _ -> {:cont, nest_level}
+      end
+    end)
+  end
 
   defp drop_rest([first | rest], nest_level \\ 0) do
     case {first, nest_level} do
