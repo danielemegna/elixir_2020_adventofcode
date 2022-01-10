@@ -1,5 +1,11 @@
 defmodule Advent18 do
 
+  def resolve_first_part do
+    read_input_file_content()
+    |> Stream.map(&evaluate_expression/1)
+    |> Enum.sum
+  end
+
   def evaluate_expression(string) do
     string
     |> String.replace("(", "( ")
@@ -54,6 +60,11 @@ defmodule Advent18 do
       {"(", _} -> drop_rest(rest, nest_level+1)
       _ -> drop_rest(rest, nest_level)
     end
+  end
+
+  defp read_input_file_content do
+    File.stream!("advent18.txt")
+    |> Stream.map(&String.trim/1)
   end
 
 end
