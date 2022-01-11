@@ -31,6 +31,11 @@ defmodule OrderPrecedenceCalculator do
 
   def evaluate(list), do: evaluate(list, {0, :sum})
 
+  defp evaluate([n | rest], {accumulated, next_operation}) when is_integer(n) do
+    operation_result = calc(accumulated, next_operation, n)
+    evaluate(rest, {operation_result, nil})
+  end
+
   defp evaluate(["+" | rest], {accumulated, _}), do:
     evaluate(rest, {accumulated, :sum})
 
@@ -39,22 +44,19 @@ defmodule OrderPrecedenceCalculator do
 
   defp evaluate(["(" | rest], {accumulated, next_operation}) do
     close_parenthesis_index = close_parenthesis_index_onward(rest)
-    {inner, [_|rest]} = Enum.split(rest, close_parenthesis_index)
+    {inner, [_close_parentesis | rest]} = Enum.split(rest, close_parenthesis_index)
     inner_evaluation = evaluate(inner)
-    operation_result = calc(accumulated, inner_evaluation, next_operation)
+    operation_result = calc(accumulated, next_operation, inner_evaluation)
     evaluate(rest, {operation_result, nil})
   end
 
-  defp evaluate([")" | _], {accumulated, _}), do: accumulated
+  defp evaluate([")" | rest], {accumulated, _}), do:
+    evaluate(rest, {accumulated, nil})
+
   defp evaluate([], {accumulated, _}), do: accumulated
 
-  defp evaluate([n | rest], {accumulated, next_operation}) do
-    operation_result = calc(accumulated, n, next_operation)
-    evaluate(rest, {operation_result, nil})
-  end
-
-  defp calc(prev, current, :sum), do: prev + current
-  defp calc(prev, current, :prod), do: prev * current
+  defp calc(prev, :sum, current), do: prev + current
+  defp calc(prev, :prod, current), do: prev * current
 
 end
 
@@ -69,8 +71,8 @@ defmodule AdditionsPrecedenceCalculator do
   defp solve_additions(list) do
     case Enum.find_index(list, &(&1 == "+")) do
       nil -> list
-      n ->
-        {left, [_plus | right]} = Enum.split(list, n)
+      plus_index ->
+        {left, [_plus | right]} = Enum.split(list, plus_index)
         {l_rest, sum, r_rest} = solve_addition(left, right)
         new_list = l_rest ++ [sum] ++ r_rest
         solve_additions(new_list)
