@@ -24,8 +24,6 @@ defmodule CalculatorUtils do
     end)
   end
 
-  def to_int(n) when is_integer(n), do: n
-  def to_int(b) when is_binary(b), do: String.to_integer(b)
 end
 
 defmodule OrderPrecedenceCalculator do
@@ -51,7 +49,7 @@ defmodule OrderPrecedenceCalculator do
   defp evaluate([], {accumulated, _}), do: accumulated
 
   defp evaluate([n | rest], {accumulated, next_operation}) do
-    operation_result = calc(accumulated, to_int(n), next_operation)
+    operation_result = calc(accumulated, n, next_operation)
     evaluate(rest, {operation_result, nil})
   end
 
@@ -87,7 +85,7 @@ defmodule AdditionsPrecedenceCalculator do
         inner_evaluation = evaluate(inner)
         {inner_evaluation, Enum.drop(rest, close_parenthesis_index-1)}
       {rest, [n]} ->
-        {to_int(n), rest}
+        {n, rest}
     end
 
     {r_value, r_rest} = case right do
@@ -97,7 +95,7 @@ defmodule AdditionsPrecedenceCalculator do
         inner_evaluation = evaluate(inner)
         {inner_evaluation, Enum.drop(rest, close_parenthesis_index+1)}
       [n | rest] -> 
-        {to_int(n), rest}
+        {n, rest}
     end
 
     sum = l_value + r_value
@@ -129,7 +127,15 @@ defmodule Advent18 do
     |> String.replace("(", "( ")
     |> String.replace(")", " )")
     |> String.split()
+    |> Enum.map(&try_to_int/1)
     |> calculator_module.evaluate()
+  end
+
+  defp try_to_int(string) do
+    case Integer.parse(string) do
+      :error -> string
+      {int, _} -> int
+    end
   end
 
   defp read_input_file_content do
