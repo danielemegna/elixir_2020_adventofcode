@@ -81,20 +81,9 @@ defmodule AdditionsPrecedenceCalculator do
 
   defp solve_addition(left, right) do
     {left_solved, left_rest} = solve_left(left)
-
-    ## extract in solve right
-    {r_value, r_rest} = case right do
-      ["(" | rest] ->
-        close_parenthesis_index = close_parenthesis_index_onward(rest)
-        inner = Enum.take(rest, close_parenthesis_index)
-        inner_evaluation = evaluate(inner)
-        {inner_evaluation, Enum.drop(rest, close_parenthesis_index+1)}
-      [n | rest] -> 
-        {n, rest}
-    end
-
-    sum = left_solved + r_value
-    {left_rest, sum, r_rest}
+    {right_solved, right_rest} = solve_right(right)
+    sum = left_solved + right_solved
+    {left_rest, sum, right_rest}
   end
 
   defp solve_left(list) do
@@ -104,6 +93,17 @@ defmodule AdditionsPrecedenceCalculator do
       {rest, [")"]} ->
         close_parenthesis_index = close_parenthesis_index_backwards(rest)
         {rest, [_close_parenthesis | to_solve]} = Enum.split(rest, close_parenthesis_index)
+        {evaluate(to_solve), rest}
+    end
+  end
+
+  defp solve_right(list) do
+    case list do
+      [n | rest] when is_integer(n) -> 
+        {n, rest}
+      ["(" | rest] ->
+        close_parenthesis_index = close_parenthesis_index_onward(rest)
+        {to_solve, [_close_parenthesis | rest]} = Enum.split(rest, close_parenthesis_index)
         {evaluate(to_solve), rest}
     end
   end
