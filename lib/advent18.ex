@@ -4,7 +4,7 @@ defmodule CalculatorUtils do
     close_parenthesis_index(list, ")")
 
   def close_parenthesis_index_backwards(list), do:
-    -close_parenthesis_index(Enum.reverse(list), "(")
+    -(close_parenthesis_index(Enum.reverse(list), "("))-1
 
   defp close_parenthesis_index(list, close_char) do
     open_char = case close_char do
@@ -44,7 +44,7 @@ defmodule OrderPrecedenceCalculator do
 
   defp evaluate(["(" | rest], {accumulated, next_operation}) do
     close_parenthesis_index = close_parenthesis_index_onward(rest)
-    {inner, [_close_parentesis | rest]} = Enum.split(rest, close_parenthesis_index)
+    {inner, [_close_parenthesis | rest]} = Enum.split(rest, close_parenthesis_index)
     inner_evaluation = evaluate(inner)
     operation_result = calc(accumulated, next_operation, inner_evaluation)
     evaluate(rest, {operation_result, nil})
@@ -80,16 +80,9 @@ defmodule AdditionsPrecedenceCalculator do
   end
 
   defp solve_addition(left, right) do
-    {l_value, l_rest} = case Enum.split(left, -1) do
-      {rest, [")"]} ->
-        close_parenthesis_index = close_parenthesis_index_backwards(rest)
-        inner = Enum.take(rest, close_parenthesis_index)
-        inner_evaluation = evaluate(inner)
-        {inner_evaluation, Enum.drop(rest, close_parenthesis_index-1)}
-      {rest, [n]} ->
-        {n, rest}
-    end
+    {left_solved, left_rest} = solve_left(left)
 
+    ## extract in solve right
     {r_value, r_rest} = case right do
       ["(" | rest] ->
         close_parenthesis_index = close_parenthesis_index_onward(rest)
@@ -100,8 +93,19 @@ defmodule AdditionsPrecedenceCalculator do
         {n, rest}
     end
 
-    sum = l_value + r_value
-    {l_rest, sum, r_rest}
+    sum = left_solved + r_value
+    {left_rest, sum, r_rest}
+  end
+
+  defp solve_left(list) do
+    case Enum.split(list, -1) do
+      {rest, [value]} when is_integer(value) ->
+        {value, rest}
+      {rest, [")"]} ->
+        close_parenthesis_index = close_parenthesis_index_backwards(rest)
+        {rest, [_close_parenthesis | to_solve]} = Enum.split(rest, close_parenthesis_index)
+        {evaluate(to_solve), rest}
+    end
   end
 
 end
