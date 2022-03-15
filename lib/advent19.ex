@@ -1,55 +1,42 @@
 defmodule Advent19 do
 
   def resolve_first_part do
-    {rules, messages} =
-      read_input_file_content() |> parse_input_file()
+    file_lines = read_input_file_content()
+    {rules, messages} = parse_input_file(file_lines)
     count_matches_with_rule(messages, 0, rules)
   end
 
   def count_matches_with_rule(messages, rule_number, rules) do
     messages
-    |> Enum.count(fn message ->
-      match_with_rule?(message, rule_number, rules)
-    end)
+    |> Enum.count(&(match_with_rule?(&1, rule_number, rules)))
   end
 
   def match_with_rule?(message, rule_number, rules) when is_integer(rule_number) do
-    rule = rules[rule_number]
-    match_with_rule?(message, rule, rules)
-  end
-
-  def match_with_rule?(message, [[_|_]|_] = composed_rule, rules) do
-    composed_rule
+    rules[rule_number]
     |> Enum.any?(&(match_with_rule?(message, &1, rules)))
   end
 
   def match_with_rule?("", [], _), do: true
+  def match_with_rule?("", _, _), do: false
   def match_with_rule?(_, [], _), do: false
-  def match_with_rule?(message, rule, rules) when is_list(rule) do
-    [head | rest] = rule
-    head_rule = rules[head]
+  def match_with_rule?(message, [start_of_rule | rest_of_rule] = _rule, rules) do
+    translated_start_of_rule = rules[start_of_rule]
+    match_with?(message, translated_start_of_rule, rest_of_rule, rules)
+  end
 
-    case head_rule do
-
-      s when is_binary(s) ->
-        if(String.starts_with?(message, s)) do
-          new_message = String.slice(message, 1..-1)
-          new_rule = rest
-          match_with_rule?(new_message, new_rule, rules)
-        else
-          false
-        end
-
-      l when is_list(l) -> # is always a list of lists 
-        l
-        |> Stream.map(fn partial_rule ->
-          (partial_rule ++ rest)
-        end)
-        |> Enum.any?(fn new_rule ->
-          match_with_rule?(message, new_rule, rules)
-        end)
-
+  defp match_with?(message, string, rest_of_rule, rules) when is_binary(string) do
+    if(String.starts_with?(message, string)) do
+      new_message = String.slice(message, 1..-1)
+      match_with_rule?(new_message, rest_of_rule, rules)
+    else
+      false
     end
+  end
+
+  defp match_with?(message, composed_rule, rest_of_rule, rules) when is_list(composed_rule) do
+    composed_rule
+    |> Stream.map(fn partial_rule -> partial_rule ++ rest_of_rule end)
+    |> Enum.any?(fn new_rule -> match_with_rule?(message, new_rule, rules) end)
   end
 
   def parse_input_file(lines) do
