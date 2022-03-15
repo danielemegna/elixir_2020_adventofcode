@@ -6,6 +6,17 @@ defmodule Advent19 do
     count_matching_messages(messages, _rule = [0], rules_dictionary)
   end
 
+  def resolve_second_part do
+    file_lines = read_input_file_content()
+    {rules_dictionary, messages} = parse_input_file(file_lines)
+    patched_rules_dictionary = rules_dictionary
+    |> Map.merge(%{
+      8 => [[42],[42, 8]],
+      11 => [[42, 31],[42, 11, 31]]
+    })
+    count_matching_messages(messages, _rule = [0], patched_rules_dictionary)
+  end
+
   def count_matching_messages(messages, rule, rules_dictionary) do
     messages
     |> Enum.count(&(match_with_rule?(&1, rule, rules_dictionary)))
