@@ -1,6 +1,10 @@
 defmodule Advent19Test do
   use ExUnit.Case
 
+  test "resolve first part" do
+    assert Advent19.resolve_first_part() == 134
+  end
+
   test "count matches with rule" do
     rules = %{
       0 => [[4,1,5]],

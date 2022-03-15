@@ -1,5 +1,11 @@
 defmodule Advent19 do
 
+  def resolve_first_part do
+    {rules, messages} =
+      read_input_file_content() |> parse_input_file()
+    count_matches_with_rule(messages, 0, rules)
+  end
+
   def count_matches_with_rule(messages, rule_number, rules) do
     messages
     |> Enum.count(fn message ->
@@ -76,6 +82,11 @@ defmodule Advent19 do
     |> Map.new
 
     {rules, messages}
+  end
+
+  defp read_input_file_content do
+    File.stream!("advent19.txt")
+    |> Stream.map(&String.trim/1)
   end
 
 end
