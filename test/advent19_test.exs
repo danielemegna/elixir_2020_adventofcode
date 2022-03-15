@@ -6,7 +6,7 @@ defmodule Advent19Test do
   end
 
   test "count matches with rule" do
-    rules = %{
+    rules_dictionary = %{
       0 => [[4, 1, 5]],
       1 => [[2, 3], [3, 2]],
       2 => [[4, 4], [5, 5]],
@@ -16,11 +16,11 @@ defmodule Advent19Test do
     }
     messages = ["ababbb", "bababa", "abbbab", "aaabbb", "aaaabbb"]
 
-    assert Advent19.count_matches_with_rule(messages, 0, rules) == 2
+    assert Advent19.count_matching_messages(messages, [0], rules_dictionary) == 2
   end
 
   test "count matches with rule - more complex provided example" do
-    rules = %{
+    rules_dictionary = %{
       42 => [[9, 14], [10, 1]],
       9 => [[14, 27], [1, 26]],
       10 => [[23, 14], [28, 1]],
@@ -71,11 +71,11 @@ defmodule Advent19Test do
       "aabbbbbaabbbaaaaaabbbbbababaaaaabbaaabba"
     ]
 
-    assert Advent19.count_matches_with_rule(messages, 0, rules) == 3
+    assert Advent19.count_matching_messages(messages, [0], rules_dictionary) == 3
   end
 
   test "match message against rules" do
-    rules = %{
+    rules_dictionary = %{
       0 => [[4, 1, 5]],
       1 => [[2, 3], [3, 2]],
       2 => [[4, 4], [5, 5]],
@@ -85,15 +85,15 @@ defmodule Advent19Test do
     }
 
     # can't match
-    assert Advent19.match_with_rule?("bababa", 0, rules) == false
-    assert Advent19.match_with_rule?("aaabbb", 0, rules) == false
+    assert Advent19.match_with_rule?("bababa", [0], rules_dictionary) == false
+    assert Advent19.match_with_rule?("aaabbb", [0], rules_dictionary) == false
     # matches with missing or too much elements
-    assert Advent19.match_with_rule?("abba", 0, rules) == false
-    assert Advent19.match_with_rule?("aaaabbb", 0, rules) == false
+    assert Advent19.match_with_rule?("abba", [0], rules_dictionary) == false
+    assert Advent19.match_with_rule?("aaaabbb", [0], rules_dictionary) == false
     # matches
-    assert Advent19.match_with_rule?("ababbb", 0, rules) == true
-    assert Advent19.match_with_rule?("abbbab", 0, rules) == true
-    assert Advent19.match_with_rule?("aaaabb", 0, rules) == true
+    assert Advent19.match_with_rule?("ababbb", [0], rules_dictionary) == true
+    assert Advent19.match_with_rule?("abbbab", [0], rules_dictionary) == true
+    assert Advent19.match_with_rule?("aaaabb", [0], rules_dictionary) == true
   end
 
   test "parse input file lines" do
@@ -112,9 +112,10 @@ defmodule Advent19Test do
     aaaabbb
     """
 
-    {actual_message_rules, actual_messages} = Advent19.parse_input_file(stream_of(input_file_content))
+    {actual_rules_dictionary, actual_messages} = Advent19.parse_input_file(stream_of(input_file_content))
 
-    expected_message_rules = %{
+    assert actual_messages == ["ababbb", "bababa", "abbbab", "aaabbb", "aaaabbb"]
+    assert actual_rules_dictionary == %{
       0 => [[4, 1, 5]],
       1 => [[2, 3], [3, 2]],
       2 => [[4, 4], [5, 5]],
@@ -122,8 +123,6 @@ defmodule Advent19Test do
       4 => "a",
       5 => "b"
     }
-    assert actual_message_rules == expected_message_rules
-    assert actual_messages == ["ababbb", "bababa", "abbbab", "aaabbb", "aaaabbb"]
   end
 
   defp stream_of(content), do: content |> String.split("\n") |> Stream.map(& &1)
