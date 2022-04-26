@@ -20,9 +20,33 @@ defmodule Tile do
           |> Enum.join(),
       }
   end
+
+  def compatible_with(tile, border) do
+    reversed_border = String.reverse(border)
+    tile.border_top == border || tile.border_top == reversed_border ||
+      tile.border_left == border || tile.border_left == reversed_border ||
+      tile.border_bottom == border || tile.border_bottom == reversed_border ||
+      tile.border_right == border || tile.border_right == reversed_border
+  end
 end
 
 defmodule Advent20 do
+
+  def compatibility_map(tile, tiles) do
+    tiles = List.delete(tiles, tile)
+
+    id_or_none = fn
+      nil -> :none
+      %Tile{} = t -> t.id
+    end
+
+    %{
+      top: tiles |> Enum.find(&(Tile.compatible_with(&1, tile.border_top))) |> id_or_none.(),
+      left: tiles |> Enum.find(&(Tile.compatible_with(&1, tile.border_left))) |> id_or_none.(),
+      bottom: tiles |> Enum.find(&(Tile.compatible_with(&1, tile.border_bottom))) |> id_or_none.(),
+      right: tiles |> Enum.find(&(Tile.compatible_with(&1, tile.border_right))) |> id_or_none.()
+    }
+  end
 
   def parse_input_file(lines) do
     lines
@@ -30,5 +54,10 @@ defmodule Advent20 do
     |> Enum.reject(&(&1 == [""]))
     |> Enum.map(&Tile.from/1)
   end
+
+  #defp read_input_file_content do
+  #  File.stream!("advent20.txt")
+  #  |> Stream.map(&String.trim/1)
+  #end
 
 end
