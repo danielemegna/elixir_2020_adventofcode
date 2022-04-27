@@ -2,15 +2,24 @@ defmodule Advent20Test do
   use ExUnit.Case
 
   @provided_example_tiles [
-    %Tile{ border_bottom: "..###..###", border_left: ".#####..#.", border_right: "...#.##..#", border_top: "..##.#..#.", id: 2311 },
-    %Tile{ border_bottom: "#...##.#..", border_left: "##.#..#..#", border_right: ".#####..#.", border_top: "#.##...##.", id: 1951 },
-    %Tile{ border_bottom: ".....##...", border_left: "###....##.", border_right: ".#..#.....", border_top: "####...##.", id: 1171 },
-    %Tile{ border_bottom: "..##.#..#.", border_left: "#..#......", border_right: "..###.#.#.", border_top: "###.##.#..", id: 1427 },
-    %Tile{ border_bottom: "###.##.#..", border_left: "#...##.#.#", border_right: ".....#..#.", border_top: "##.#.#....", id: 1489 },
-    %Tile{ border_bottom: "..###.#.#.", border_left: "####...##.", border_right: "...###.#..", border_top: "#....####.", id: 2473 },
-    %Tile{ border_bottom: "...#.#.#.#", border_left: ".###..#...", border_right: "#...##.#.#", border_top: "..#.#....#", id: 2971 },
-    %Tile{ border_bottom: "#.##...##.", border_left: ".#....####", border_right: "#..#......", border_top: "...#.#.#.#", id: 2729 },
-    %Tile{ border_bottom: "..#.###...", border_left: "#..##.#...", border_right: ".#....#...", border_top: "#.#.#####.", id: 3079 }
+    %Tile{ border_bottom: "..###..###", border_left: ".#####..#.", border_right: "...#.##..#", border_top: "..##.#..#.", id: 2311,
+      content: ["#..#....", "...##..#", "###.#...", "#.##.###", "#...#.##", "#.#.#..#", ".#....#.", "##...#.#"]},
+    %Tile{ border_bottom: "#...##.#..", border_left: "##.#..#..#", border_right: ".#####..#.", border_top: "#.##...##.", id: 1951,
+      content: [".####...", "....#..#", "...#####", "##.#....", "###.####", "##.##.##", "###....#", ".#.#..#."]},
+    %Tile{ border_bottom: ".....##...", border_left: "###....##.", border_right: ".#..#.....", border_top: "####...##.", id: 1171,
+      content: ["..##.#..", "#.#..#.#", "###.####", ".###.###", "##....##", "#...####", ".##.####", "###..#.."]},
+    %Tile{ border_bottom: "..##.#..#.", border_left: "#..#......", border_right: "..###.#.#.", border_top: "###.##.#..", id: 1427,
+      content: ["#..#.##.", "#.##.#..", ".#.#.##.", "...#...#", "..##..##", "..#.####", "#.####.#", ".#..###."]},
+    %Tile{ border_bottom: "###.##.#..", border_left: "#...##.#.#", border_right: ".....#..#.", border_top: "##.#.#....", id: 1489,
+      content: [".##...#.", "##..##..", ".#...#..", "####...#", "..#.#.#.", "..#.#.#.", "#.#...##", ".##.##.#"]},
+    %Tile{ border_bottom: "..###.#.#.", border_left: "####...##.", border_right: "...###.#..", border_top: "#....####.", id: 2473,
+      content: ["..#.##..", ".##..#..", "#####.#.", "#...#.#.", "########", "###.#..#", "#######.", "#...##.#"]},
+    %Tile{ border_bottom: "...#.#.#.#", border_left: ".###..#...", border_right: "#...##.#.#", border_top: "..#.#....#", id: 2971,
+      content: ["...###..", ".#.###..", "#.##..#.", "#####..#", "#..####.", "..#.#..#", ".####.##", ".#.#.###"]},
+    %Tile{ border_bottom: "#.##...##.", border_left: ".#....####", border_right: "#..#......", border_top: "...#.#.#.#", id: 2729,
+      content: ["###.#...", ".#.#....", "...#..#.", "##..##.#", "#.####..", "###.#.#.", "#.####..", "#..#.##."]},
+    %Tile{ border_bottom: "..#.###...", border_left: "#..##.#...", border_right: ".#....#...", border_top: "#.#.#####.", id: 3079,
+      content: ["#..#####", ".#......", "#####...", "###.#..#", "#...#.##", ".#####.#", ".#.###..", ".#......"]}
   ]
 
   test "resolve first part" do
@@ -28,6 +37,7 @@ defmodule Advent20Test do
       border_left: "#..#......",
       border_bottom: "..##.#..#.",
       border_right: "..###.#.#.",
+      content: "any"
     }
 
     map = Advent20.compatibility_map(tile, @provided_example_tiles)
@@ -41,7 +51,8 @@ defmodule Advent20Test do
       border_top: "#.#.#####.",
       border_left: "#..##.#...",
       border_bottom: "..#.###...",
-      border_right: ".#....#..."
+      border_right: ".#....#...",
+      content: "any"
     }
 
     map = Advent20.compatibility_map(tile, @provided_example_tiles)

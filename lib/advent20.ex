@@ -1,5 +1,5 @@
 defmodule Tile do
-  @enforce_keys [:id, :border_top, :border_left, :border_bottom, :border_right]
+  @enforce_keys [:id, :border_top, :border_left, :border_bottom, :border_right, :content]
   defstruct @enforce_keys
 
   def from(tile_lines) do
@@ -18,6 +18,9 @@ defmodule Tile do
         border_right: image_lines
           |> Enum.map(&(String.at(&1, 9)))
           |> Enum.join(),
+        content: image_lines
+          |> Enum.slice(1..-2)
+          |> Enum.map(&(String.slice(&1, 1..-2)))
       }
   end
 
@@ -51,7 +54,7 @@ defmodule Advent20 do
   end
 
   def compatibility_map(tile, tiles) do
-    tiles = List.delete(tiles, tile)
+    tiles = Enum.reject(tiles, &(&1.id == tile.id))
 
     id_or_none = fn
       nil -> :none
