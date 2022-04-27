@@ -13,6 +13,10 @@ defmodule Advent20Test do
     %Tile{ border_bottom: "..#.###...", border_left: "#..##.#...", border_right: ".#....#...", border_top: "#.#.#####.", id: 3079 }
   ]
 
+  test "four corners check" do
+    assert Advent20.four_corner_check(@provided_example_tiles) == 1951 * 3079 * 2971 * 1171
+  end
+
   test "find compatible tiles" do
     tile = %Tile{
       id: 1427,

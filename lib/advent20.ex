@@ -30,7 +30,19 @@ defmodule Tile do
   end
 end
 
+########################################
+
 defmodule Advent20 do
+
+  def four_corner_check(tiles) do
+    tiles
+    |> Enum.map(&(compatibility_map(&1, tiles)))
+    |> Enum.filter(fn m ->
+      Map.values(m) |> Enum.filter(&(&1 == :none)) |> Enum.count == 2
+    end)
+    |> Enum.map(&(Map.get(&1, :id)))
+    |> Enum.product()
+  end
 
   def compatibility_map(tile, tiles) do
     tiles = List.delete(tiles, tile)
