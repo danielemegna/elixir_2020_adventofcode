@@ -41,6 +41,7 @@ defmodule Advent20 do
     end
 
     %{
+      id: tile.id,
       top: tiles |> Enum.find(&(Tile.compatible_with(&1, tile.border_top))) |> id_or_none.(),
       left: tiles |> Enum.find(&(Tile.compatible_with(&1, tile.border_left))) |> id_or_none.(),
       bottom: tiles |> Enum.find(&(Tile.compatible_with(&1, tile.border_bottom))) |> id_or_none.(),

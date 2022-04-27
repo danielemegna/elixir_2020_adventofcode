@@ -15,6 +15,20 @@ defmodule Advent20Test do
 
   test "find compatible tiles" do
     tile = %Tile{
+      id: 1427,
+      border_top: "###.##.#..",
+      border_left: "#..#......",
+      border_bottom: "..##.#..#.",
+      border_right: "..###.#.#.",
+    }
+
+    map = Advent20.compatibility_map(tile, @provided_example_tiles)
+
+    assert map == %{id: 1427, top: 1489, left: 2729, bottom: 2311, right: 2473}
+  end
+
+  test "find compatible tiles of a corner" do
+    tile = %Tile{
       id: 3079,
       border_top: "#.#.#####.",
       border_left: "#..##.#...",
@@ -24,7 +38,7 @@ defmodule Advent20Test do
 
     map = Advent20.compatibility_map(tile, @provided_example_tiles)
 
-    assert map == %{top: :none, left: 2311, bottom: 2473, right: :none}
+    assert map == %{id: 3079, top: :none, left: 2311, bottom: 2473, right: :none}
   end
 
   test "parse input file lines" do
