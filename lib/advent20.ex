@@ -34,6 +34,12 @@ end
 
 defmodule Advent20 do
 
+  def resolve_first_part do
+    read_input_file_content()
+    |> parse_input_file()
+    |> four_corner_check()
+  end
+
   def four_corner_check(tiles) do
     tiles
     |> Enum.map(&(compatibility_map(&1, tiles)))
@@ -68,9 +74,9 @@ defmodule Advent20 do
     |> Enum.map(&Tile.from/1)
   end
 
-  #defp read_input_file_content do
-  #  File.stream!("advent20.txt")
-  #  |> Stream.map(&String.trim/1)
-  #end
+  defp read_input_file_content do
+    File.stream!("advent20.txt")
+    |> Stream.map(&String.trim/1)
+  end
 
 end
